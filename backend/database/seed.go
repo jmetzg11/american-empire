@@ -15,6 +15,7 @@ func seedDB(db *gorm.DB) {
 		log.Println("Database already seeded")
 		return
 	}
+	activeDate := time.Date(2025, 6, 15, 0, 0, 0, 0, time.UTC)
 
 	events := []models.Event{
 		{
@@ -25,17 +26,18 @@ func seedDB(db *gorm.DB) {
 
    The operation sought to influence media organizations and journalists to disseminate propaganda favorable to CIA interests. This included recruiting leading American journalists into a network to help present the CIA's views, and funded some student and cultural organizations, and magazines as fronts.
 
-   \tKey aspects included:
+   Key aspects included:
    - Infiltration of major news organizations
    - Creation of propaganda materials
    - Coordination with foreign intelligence services`,
+			Active: &activeDate,
 			Sources: []models.Source{
 				{Name: "Church Committee Report", URL: "https://archive.org/details/churchcommittee"},
 				{Name: "Declassified CIA Documents", URL: "https://cia.gov/mockingbird-files"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/uploads/mockingbird_1950.jpg"},
-				{Type: "youtube", URL: "https://youtube.com/watch?v=abc123def"},
+				{Type: "photo", Path: "/data/photos/1/sample.jpg"},
+				{Type: "youtube", URL: "VPzp51qfqB8"},
 			},
 		},
 		{
@@ -44,19 +46,20 @@ func seedDB(db *gorm.DB) {
 			Country: "Chile",
 			Description: `Operation Condor was a United States-backed campaign of political repression and state terror involving intelligence operations and assassination.
 
-   \tThe operation was officially implemented in November 1975 by the right-wing dictatorships of the Southern Cone of South America. The program was intended to eradicate communist or Soviet influence and ideas, and to suppress active or potential opposition movements against the participating governments.
+   The operation was officially implemented in November 1975 by the right-wing dictatorships of the Southern Cone of South America. The program was intended to eradicate communist or Soviet influence and ideas, and to suppress active or potential opposition movements against the participating governments.
 
    Coordinated efforts included:
    - Cross-border intelligence sharing
    - Joint military operations
    - Systematic human rights violations`,
+			Active: &activeDate,
 			Sources: []models.Source{
 				{Name: "National Security Archive", URL: "https://nsarchive.gwu.edu/condor-files"},
 				{Name: "FBI FOIA Release", URL: "https://fbi.gov/condor-documents"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/uploads/condor_meeting_1975.jpg"},
-				{Type: "youtube", URL: "https://youtube.com/watch?v=xyz789ghi"},
+				{Type: "photo", Path: "/data/photos/2/sample.jpeg"},
+				{Type: "youtube", URL: "VPzp51qfqB8"},
 			},
 		},
 		{
@@ -67,17 +70,18 @@ func seedDB(db *gorm.DB) {
 
    Senior administration officials secretly facilitated the sale of arms to Iran, which was then under an arms embargo. The officials hoped that the arms sales would secure the release of American hostages and allow U.S. intelligence agencies to fund the Nicaraguan Contras.
 
-   \tThis covert operation involved:
+   This covert operation involved:
    - Illegal arms sales to Iran
    - Diversion of proceeds to Contra rebels
    - Circumvention of congressional oversight`,
+			Active: &activeDate,
 			Sources: []models.Source{
 				{Name: "Tower Commission Report", URL: "https://reagan.library.gov/tower-commission"},
 				{Name: "Walsh Report", URL: "https://justice.gov/walsh-final-report"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/uploads/iran_contra_documents.jpg"},
-				{Type: "youtube", URL: "https://youtube.com/watch?v=mnop456qrs"},
+				{Type: "photo", Path: "/data/photos/3/sample.jpg"},
+				{Type: "youtube", URL: "VPzp51qfqB8"},
 			},
 		},
 	}

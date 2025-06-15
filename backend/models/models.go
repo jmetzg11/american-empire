@@ -30,4 +30,5 @@ type Media struct {
 	Type    string
 	URL     string
 	Path    string
+	Caption string
 }

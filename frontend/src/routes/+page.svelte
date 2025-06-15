@@ -1,5 +1,4 @@
 <script>
-	import Header from './components/Header.svelte';
 	import Table from './components/Table.svelte';
 	import { events, fetchEvents } from '$lib/store';
 	import { onMount } from 'svelte';
@@ -9,5 +8,4 @@
 	});
 </script>
 
-<Header />
-<Table {events} />
+<Table />

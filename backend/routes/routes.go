@@ -21,7 +21,8 @@ func SetupAPIRoutes(router *gin.Engine) {
 		apiRouter.GET("/hello", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Hello from Go!"})
 		})
-		apiRouter.GET("/", handler.GetData)
+		apiRouter.GET("/", handler.GetEvents)
+		apiRouter.POST("/event", handler.GetEvent)
 	}
 }
 
