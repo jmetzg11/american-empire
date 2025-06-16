@@ -8,8 +8,8 @@
 	}
 </script>
 
-<div class="mx-auto max-w-6xl p-4">
-	<div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+<div class="container-wrap">
+	<div class="card-style overflow-hidden">
 		<table class="w-full">
 			<thead class="border-b border-gray-200 bg-gray-50">
 				<tr>

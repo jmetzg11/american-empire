@@ -1,12 +1,18 @@
 <script>
 	import { page } from '$app/stores';
-
+	import GuidelinesModal from './GuidelinesModal.svelte';
 	const currentPath = $derived($page.url.pathname);
 	const isEventPage = $derived(currentPath.includes('/event/'));
 	const isContributePage = $derived(currentPath.includes('/contribute'));
 
 	let countries = $state(['Mexico', 'United Stated', 'Canada']);
 	let selectedCountry = $state('');
+	let showGuidelinesModal = $state(false);
+
+	function openGuidelinesModal() {
+		console.log('openGuidelinesModal');
+		showGuidelinesModal = true;
+	}
 </script>
 
 <div class="border-b border-gray-300 bg-white p-4 shadow-sm">
@@ -51,8 +57,16 @@
 			>
 				Contribute
 			</a>
-		{:else}
-			<div></div>
+		{:else if isContributePage}
+			<div class="text-2xl font-bold text-gray-700">Contributions are welcome!</div>
+			<div class="text-sm text-gray-500">
+				<button onclick={openGuidelinesModal} class="cursor-pointer text-blue-600">
+					Guidelines
+				</button>
+				for contributing.
+			</div>
 		{/if}
 	</div>
 </div>
+
+<GuidelinesModal bind:show={showGuidelinesModal} />

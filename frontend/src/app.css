@@ -1,1 +1,21 @@
 @import 'tailwindcss';
+
+.container-wrap {
+	@apply mx-auto max-w-6xl p-4;
+}
+
+.card-style {
+	@apply rounded-xl border border-gray-200 bg-white p-6 shadow-sm;
+}
+
+.carousel-button {
+	@apply h-10 w-10 cursor-pointer items-center rounded-full bg-slate-900 text-xl text-white hover:bg-slate-700;
+}
+
+.label {
+	@apply mb-2 block text-base font-medium text-gray-700;
+}
+
+.input {
+	@apply w-full rounded-md border border-gray-300 px-3 py-2 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+}

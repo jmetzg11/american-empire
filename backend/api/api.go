@@ -32,7 +32,11 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	var event models.Event
-	result := h.DB.Preload("Sources").Preload("Medias").Where("id = ?", request.ID).First(&event)
+	query := h.DB.Select("id, title, date, description")
+	query = query.Preload("Sources")
+	query = query.Preload("Medias")
+	query = query.Where("id = ?", request.ID)
+	result := query.First(&event)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)

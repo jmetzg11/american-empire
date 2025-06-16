@@ -36,8 +36,11 @@ func seedDB(db *gorm.DB) {
 				{Name: "Declassified CIA Documents", URL: "https://cia.gov/mockingbird-files"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/data/photos/1/sample.jpg"},
-				{Type: "youtube", URL: "VPzp51qfqB8"},
+				{Type: "photo", Path: "/1/sample.jpg", Caption: "Church Committee Report"},
+				{Type: "photo", Path: "/1/sample2.jpeg", Caption: "Cool Report"},
+				{Type: "photo", Path: "/1/sample3.jpeg", Caption: "Different Report"},
+				{Type: "youtube", URL: "bDjGJzBdAwY", Caption: "Declassified CIA Documents"},
+				{Type: "youtube", URL: "bGAFTaelGRk", Caption: "Declassified FBI Documents"},
 			},
 		},
 		{
@@ -58,8 +61,8 @@ func seedDB(db *gorm.DB) {
 				{Name: "FBI FOIA Release", URL: "https://fbi.gov/condor-documents"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/data/photos/2/sample.jpeg"},
-				{Type: "youtube", URL: "VPzp51qfqB8"},
+				{Type: "photo", Path: "/2/sample.jpeg", Caption: "National Security Archive"},
+				{Type: "youtube", URL: "bDjGJzBdAwY", Caption: "FBI FOIA Release"},
 			},
 		},
 		{
@@ -80,8 +83,8 @@ func seedDB(db *gorm.DB) {
 				{Name: "Walsh Report", URL: "https://justice.gov/walsh-final-report"},
 			},
 			Medias: []models.Media{
-				{Type: "photo", Path: "/data/photos/3/sample.jpg"},
-				{Type: "youtube", URL: "VPzp51qfqB8"},
+				{Type: "photo", Path: "/3/sample.png", Caption: "Tower Commission Report"},
+				{Type: "youtube", URL: "bDjGJzBdAwY", Caption: "Walsh Report"},
 			},
 		},
 	}
