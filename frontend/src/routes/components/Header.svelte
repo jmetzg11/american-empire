@@ -18,12 +18,7 @@
 <div class="border-b border-gray-300 bg-white p-4 shadow-sm">
 	<div class="mx-auto flex max-w-4xl items-center justify-between">
 		{#if isEventPage || isContributePage}
-			<a
-				href="/"
-				class="inline-block rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-			>
-				Home
-			</a>
+			<a href="/" class="btn"> Home </a>
 		{:else}
 			<div class="relative">
 				<select
@@ -44,19 +39,9 @@
 			</div>
 		{/if}
 		{#if isEventPage}
-			<a
-				href="/correction"
-				class="inline-block rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-			>
-				Edit
-			</a>
+			<a href="/correction" class="btn"> Edit </a>
 		{:else if !isEventPage && !isContributePage}
-			<a
-				href="/contribute"
-				class="inline-block rounded-lg bg-blue-600 px-6 py-2 font-medium text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-			>
-				Contribute
-			</a>
+			<a href="/contribute" class="btn"> Contribute </a>
 		{:else if isContributePage}
 			<div class="text-2xl font-bold text-gray-700">Contributions are welcome!</div>
 			<div class="text-sm text-gray-500">
@@ -69,4 +54,4 @@
 	</div>
 </div>
 
-<GuidelinesModal bind:show={showGuidelinesModal} />
+<GuidelinesModal bind:showGuidelinesModal />

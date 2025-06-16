@@ -1,4 +1,6 @@
 <script>
+	import MediaModal from './MediaModal.svelte';
+
 	let country = $state('');
 	let title = $state('');
 	let date = $state('');
@@ -49,9 +51,15 @@
 				></textarea>
 			</div>
 			<div class="flex justify-between">
-				<button type="button" onclick={() => (showMediaModal = true)}>Add Media</button>
-				<button type="button" onclick={() => (showSourceModal = true)}>Add Source *</button>
+				<button type="button" onclick={() => (showMediaModal = true)} class="btn-2"
+					>Add Media</button
+				>
+				<button type="button" onclick={() => (showSourceModal = true)} class="btn-2">
+					Add Source *
+				</button>
 			</div>
 		</div>
 	</div>
 </div>
+
+<MediaModal bind:showMediaModal {media} />

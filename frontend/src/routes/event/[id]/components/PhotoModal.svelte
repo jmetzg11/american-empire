@@ -1,5 +1,5 @@
 <script>
-	let { showPhotoModal = $bindable(false), media = null } = $props();
+	let { showPhotoModal = $bindable(), media = null } = $props();
 
 	function handleClose() {
 		showPhotoModal = false;
@@ -17,7 +17,7 @@
 		role="button"
 		tabindex="0"
 		aria-label="Close photo modal background"
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+		class="modal-wrapper"
 		onclick={handleClose}
 		onkeydown={handleKeydown}
 	>
