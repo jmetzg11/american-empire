@@ -4,8 +4,9 @@
 	let photoFile = $state(null);
 	let youtubeTitle = $state('');
 	let youtubeUrl = $state('');
-	let canSubmit = $derived((photoFile?.[0] && photoTitle) || (youtubeUrl && youtubeTitle));
-	$inspect(canSubmit);
+	let canSubmit = $derived(
+		(photoFile && photoFile[0] && photoTitle) || (youtubeUrl && youtubeTitle)
+	);
 
 	function addMedia() {
 		if (photoFile?.[0] && photoTitle) {
@@ -28,6 +29,10 @@
 		}
 	}
 
+	function removeMedia(index) {
+		media.splice(index, 1);
+	}
+
 	function closeModal() {
 		showMediaModal = false;
 	}
@@ -35,41 +40,40 @@
 
 {#if showMediaModal}
 	<div class="modal-wrapper">
-		<div class="modal-content space-y-6">
-			{#each media as m}
-				<div>{media.title}</div>
-				<div>{media.type}</div>
-				<button class="btn-3">Remove</button>
+		<div class="modal-content">
+			{#each media as m, i}
+				<div class="flex items-center justify-between border-b border-gray-300 p-2">
+					<div class="flex items-center space-x-4">
+						<span class="font-medium">{m.title}</span>
+						<span class="text-sm capitalize text-gray-600">{m.type}</span>
+					</div>
+					<button class="btn-danger" onclick={() => removeMedia(i)}>Remove</button>
+				</div>
 			{/each}
-			<div class="flex justify-between">
+			<div class="mt-6 flex justify-between">
 				<div class="flex-2/3 mr-6">
 					<label for="photo-title" class="label">Photo title</label>
-					<input id="photo-title" type="text" class="input" bind={photoTitle} />
+					<input id="photo-title" type="text" class="input" bind:value={photoTitle} />
 				</div>
 				<div class="flex-1/3">
 					<label for="photo-file" class="label">Photo Upload</label>
-					<input id="photo-file" type="file" class="input" bind={photoFile} />
+					<input id="photo-file" type="file" class="input" bind:files={photoFile} />
 				</div>
 			</div>
-			<div class="flex justify-between">
+			<div class="mt-6 flex justify-between">
 				<div class="flex-2/3 mr-6">
 					<label for="youtube-title" class="label">Youtube description</label>
-					<input id="youtube-title" class="input" type="text" bind={youtubeTitle} />
+					<input id="youtube-title" class="input" type="text" bind:value={youtubeTitle} />
 				</div>
 				<div class="flex-1/3">
 					<label for="youtube-url" class="label">Youtube Upload</label>
-					<input id="youtube-url" type="text" class="input" bind={youtubeUrl} />
+					<input id="youtube-url" type="text" class="input" bind:value={youtubeUrl} />
 				</div>
 			</div>
 
-			<div class="flex justify-between">
-				{canSubmit}
-				<button
-					class="btn-2 mt-6 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-600"
-					onclick={addMedia}
-					disabled={canSubmit}>Add</button
-				>
-				<button class="btn-2 mt-6" onclick={closeModal}>Close</button>
+			<div class="mt-2 flex justify-between">
+				<button class="btn-secondary mt-6" onclick={addMedia} disabled={!canSubmit}>Add</button>
+				<button class="btn-secondary mt-6" onclick={closeModal}>Close</button>
 			</div>
 		</div>
 	</div>

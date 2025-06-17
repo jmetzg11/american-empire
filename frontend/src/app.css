@@ -29,13 +29,13 @@
 }
 
 .btn {
-	@apply cursor-pointer rounded bg-teal-600 px-4 py-2 text-white hover:bg-teal-700;
+	@apply cursor-pointer rounded bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-600;
 }
 
-.btn-2 {
-	@apply cursor-pointer rounded bg-cyan-600 px-4 py-2 text-white hover:bg-cyan-700;
+.btn-secondary {
+	@apply cursor-pointer rounded bg-cyan-600 px-4 py-2 text-white hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-600;
 }
 
-.btn-3 {
-	@apply cursor-pointer rounded bg-rose-600 px-4 py-2 text-white hover:bg-rose-700;
+.btn-danger {
+	@apply cursor-pointer rounded bg-rose-600 px-4 py-2 text-white hover:bg-rose-700 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-600;
 }

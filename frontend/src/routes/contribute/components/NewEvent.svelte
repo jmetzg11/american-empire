@@ -51,10 +51,10 @@
 				></textarea>
 			</div>
 			<div class="flex justify-between">
-				<button type="button" onclick={() => (showMediaModal = true)} class="btn-2"
+				<button type="button" onclick={() => (showMediaModal = true)} class="btn-secondary"
 					>Add Media</button
 				>
-				<button type="button" onclick={() => (showSourceModal = true)} class="btn-2">
+				<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">
 					Add Source *
 				</button>
 			</div>
