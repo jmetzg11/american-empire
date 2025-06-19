@@ -8,7 +8,7 @@
 
 {#if showGuidelinesModal}
 	<div class="modal-wrapper">
-		<div class="modal-content">
+		<div class="modal-content !max-w-2xl">
 			<h2 class="mb-4 text-xl font-bold">Guidelines</h2>
 
 			<div class="space-y-4">

@@ -1,6 +1,7 @@
 <script>
+	import { contributeEvent } from '$lib/api';
 	import MediaModal from './MediaModal.svelte';
-
+	import SourceModal from './SourceModal.svelte';
 	let country = $state('');
 	let title = $state('');
 	let date = $state('');
@@ -14,6 +15,35 @@
 	function autoGrow(event) {
 		event.target.style.height = 'auto';
 		event.target.style.height = event.target.scrollHeight + 'px';
+	}
+
+	async function submitEvent() {
+		const formData = new FormData();
+
+		formData.append('country', country);
+		formData.append('title', title);
+		formData.append('date', date);
+		formData.append('description', description);
+
+		source.forEach((src, index) => {
+			formData.append(`source[${index}][name]`, src.name);
+			formData.append(`source[${index}][url]`, src.url);
+		});
+
+		media.forEach((item, index) => {
+			if (item.type === 'photo') {
+				formData.append(`media[${index}][file]`, item.file);
+				formData.append(`media[${index}][type]`, 'photo');
+				formData.append(`media[${index}][caption]`, item.title);
+			} else if (item.type === 'youtube') {
+				formData.append(`media[${index}][type]`, 'youtube');
+				formData.append(`media[${index}][url]`, item.url);
+				formData.append(`media[${index}][caption]`, item.title);
+			}
+		});
+
+		const response = await contributeEvent(formData);
+		console.log(response);
 	}
 </script>
 
@@ -51,11 +81,14 @@
 				></textarea>
 			</div>
 			<div class="flex justify-between">
-				<button type="button" onclick={() => (showMediaModal = true)} class="btn-secondary"
-					>Add Media</button
-				>
 				<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">
-					Add Source *
+					Add Source * {source.length > 0 ? `(${source.length})` : ''}
+				</button>
+				<button type="button" onclick={() => (showMediaModal = true)} class="btn-secondary"
+					>Add Media {media.length > 0 ? `(${media.length})` : ''}</button
+				>
+				<button type="button" onclick={submitEvent} disabled={!ableToSubmit} class="btn">
+					Submit
 				</button>
 			</div>
 		</div>
@@ -63,3 +96,4 @@
 </div>
 
 <MediaModal bind:showMediaModal {media} />
+<SourceModal bind:showSourceModal {source} />

@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"good-guys/backend/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,4 +45,78 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	c.JSON(200, event)
+}
+
+func (h *Handler) ContributeEvent(c *gin.Context) {
+	var event models.Event
+
+	event.Title = c.PostForm("title")
+	event.Country = c.PostForm("country")
+	event.Description = c.PostForm("description")
+
+	dateStr := c.PostForm("date")
+	parrsedDate, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid date format"})
+		return
+	}
+	event.Date = parrsedDate
+
+	if err := h.DB.Create(&event).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to create event"})
+		return
+	}
+
+	form, _ := c.MultipartForm()
+
+	if sourceNames, exists := form.Value["sources[][name]"]; exists {
+		sourceUrls := form.Value["sources[][url]"]
+		for i, name := range sourceNames {
+			if i < len(sourceUrls) {
+				source := models.Source{
+					EventID: event.ID,
+					Name:    name,
+					URL:     sourceUrls[i],
+				}
+				h.DB.Create(&source)
+			}
+		}
+	}
+
+	// if mediaTypes, exists := form.Value["media[][type]"]; exists {
+	// 	for i, mediaType := range mediaTypes {
+	// 		media := models.Media{
+	// 			EventID: event.ID,
+	// 			Type:    mediaType,
+	// 		}
+
+	// 		if mediaType == "photo" {
+	// 			files := form.File[fmt.Sprintf("media[%d][file]", i)]
+	// 			if len(files) > 0 {
+	// 				file := files[0]
+	// 				filename := fmt.Sprintf("%d_%s", time.Now().Unix(), file.Filename)
+	// 				filepath := fmt.Sprintf("uploads/%s", filename)
+
+	// 				if err := c.SaveUploadedFile(file, filepath); err != nil {
+	// 					continue
+	// 				}
+	// 				media.Path = filepath
+	// 			}
+	// 			if captions := form.Value[fmt.Sprintf("media[%d][caption]", i)]; len(captions) > 0 {
+	// 				media.Caption = captions[0]
+	// 			}
+	// 		} else if mediaType == "youtube" {
+	// 			if urls := form.Value[fmt.Sprintf("media[%d][url]", i)]; len(urls) > 0 {
+	// 				media.URL = urls[0]
+	// 			}
+	// 			if captions := form.Value[fmt.Sprintf("media[%d][caption]", i)]; len(captions) > 0 {
+	// 				media.Caption = captions[0]
+	// 			}
+	// 		}
+
+	// 		h.DB.Create(&media)
+	// 	}
+	// }
+
+	c.JSON(200, gin.H{"message": "Event contributed successfully"})
 }

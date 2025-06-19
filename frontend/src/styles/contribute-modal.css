@@ -1,0 +1,37 @@
+/* usedd in contribute/components/MediaModal.svelte and contribute/components/SourceModal.svelte */
+
+.new-info-modal-title {
+	@apply mb-4 text-xl font-bold;
+}
+
+.existing-item-row {
+	@apply flex items-center justify-between border-b border-gray-300 p-2;
+}
+
+.existing-item-text {
+	@apply flex items-center space-x-4;
+}
+
+.existing-item-title {
+	@apply font-medium;
+}
+
+.existing-item-type {
+	@apply text-sm text-gray-600 capitalize;
+}
+
+.new-info-input-container {
+	@apply mt-6 flex justify-between;
+}
+
+.new-info-input-left {
+	@apply mr-6 flex-2/3;
+}
+
+.new-info-input-right {
+	@apply flex-1/3;
+}
+
+.new-info-button-container {
+	@apply mt-2 flex justify-between;
+}

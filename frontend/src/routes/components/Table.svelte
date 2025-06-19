@@ -11,11 +11,11 @@
 <div class="container-wrap">
 	<div class="card-style overflow-hidden">
 		<table class="w-full">
-			<thead class="border-b border-gray-200 bg-gray-50">
+			<thead class="table-header">
 				<tr>
-					<th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Country</th>
-					<th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Title</th>
-					<th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Date</th>
+					<th class="th">Country</th>
+					<th class="th">Title</th>
+					<th class="th">Date</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-gray-100">
@@ -24,9 +24,9 @@
 						class="cursor-pointer transition-colors hover:bg-gray-50"
 						on:click={() => handleRowClick(event)}
 					>
-						<td class="px-6 py-4 text-sm font-semibold text-gray-900">{event.country}</td>
-						<td class="px-6 py-4 text-sm text-gray-600">{event.title}</td>
-						<td class="px-6 py-4 text-sm text-gray-600">{formatDate(event.date)}</td>
+						<td class="td">{event.country}</td>
+						<td class="td">{event.title}</td>
+						<td class="td">{formatDate(event.date)}</td>
 					</tr>
 				{/each}
 			</tbody>

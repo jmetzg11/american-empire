@@ -23,6 +23,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 		})
 		apiRouter.GET("/", handler.GetEvents)
 		apiRouter.POST("/event", handler.GetEvent)
+		apiRouter.POST("/contribute", handler.ContributeEvent)
 	}
 }
 

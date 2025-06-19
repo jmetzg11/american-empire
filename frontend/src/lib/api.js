@@ -25,3 +25,17 @@ export async function getEvent(id) {
 		return false;
 	}
 }
+
+export async function contributeEvent(formData) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/contribute`;
+		const response = await fetch(url, {
+			method: 'POST',
+			body: formData
+		});
+		return await response.json();
+	} catch (error) {
+		console.error('Error contributing event', error);
+		return { success: false, message: 'Failed to submit event' };
+	}
+}
