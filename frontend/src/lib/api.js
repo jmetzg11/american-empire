@@ -35,6 +35,7 @@ export async function contributeEvent(formData) {
 		});
 
 		const data = await response.json();
+		console.log(data);
 
 		return {
 			ok: response.ok,

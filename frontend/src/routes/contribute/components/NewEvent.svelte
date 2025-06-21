@@ -6,6 +6,7 @@
 	let title = $state('');
 	let date = $state('');
 	let description = $state('');
+	let email = $state('');
 	let media = $state([]);
 	let source = $state([]);
 	let ableToSubmit = $derived(country && title && date && description && source.length > 0);
@@ -25,6 +26,7 @@
 		formData.append('title', title);
 		formData.append('date', date);
 		formData.append('description', description);
+		formData.append('email', email);
 
 		source.forEach((src, index) => {
 			formData.append(`source[${index}][name]`, src.name);
@@ -45,12 +47,12 @@
 
 		const response = await contributeEvent(formData);
 		if (response.ok) {
-			console.log(response.ok);
 			submitted = true;
 			country = '';
 			title = '';
 			date = '';
 			description = '';
+			email = '';
 			source = [];
 			media = [];
 		}
@@ -96,6 +98,16 @@
 						oninput={autoGrow}
 						placeholder="Enter description..."
 					></textarea>
+				</div>
+				<div>
+					<label for="email" class="label">Your Email (optional)</label>
+					<input
+						id="email"
+						type="email"
+						bind:value={email}
+						class="input"
+						placeholder="Enter email"
+					/>
 				</div>
 				<div class="flex justify-between">
 					<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">

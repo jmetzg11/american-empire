@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"good-guys/backend/models"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -105,16 +104,12 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 		if mediaTypes[0] == "photo" {
 			files := form.File[fmt.Sprintf("media[%d][file]", i)]
 			if len(files) > 0 {
-				file := files[0]
-				filename := fmt.Sprintf("%d_%s", time.Now().Unix(), file.Filename)
-				dir := fmt.Sprintf("data/photos/%d", event.ID)
-				os.MkdirAll(dir, 0755)
-				fullPath := fmt.Sprintf("%s/%s", dir, filename)
-
-				if err := c.SaveUploadedFile(file, fullPath); err != nil {
-					continue
+				path, err := saveUploadedPhoto(c, files[0], event.ID)
+				if err != nil {
+					c.JSON(500, gin.H{"error": "Failed to save photo"})
+					return
 				}
-				media.Path = fmt.Sprintf("%d/%s", event.ID, filename)
+				media.Path = path
 			}
 			if captions := form.Value[fmt.Sprintf("media[%d][caption]", i)]; len(captions) > 0 {
 				media.Caption = captions[0]
@@ -130,6 +125,8 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 
 		h.DB.Create(&media)
 	}
+
+	notifyAdmin(form.Value["email"][0], &event)
 
 	c.JSON(200, gin.H{"message": "Event contributed successfully"})
 }
