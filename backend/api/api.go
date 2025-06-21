@@ -10,7 +10,7 @@ import (
 
 func (h *Handler) GetEvents(c *gin.Context) {
 	var events []models.Event
-	h.DB.Select("id, title, date, country").Find(&events)
+	h.DB.Select("id, title, date, country").Where("active IS NOT NULL").Find(&events)
 
 	var response []models.DataResponse
 	for _, event := range events {
@@ -27,7 +27,6 @@ func (h *Handler) GetEvents(c *gin.Context) {
 func (h *Handler) GetEvent(c *gin.Context) {
 	var request models.EventRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		fmt.Println(err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}

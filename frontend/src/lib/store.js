@@ -1,9 +1,14 @@
 import { writable } from 'svelte/store';
-import { getEvents } from './api';
+import { getEvents, getAdminEvents } from './api';
 
 export const events = writable([]);
 
 export async function fetchEvents() {
 	const data = await getEvents();
+	events.set(data);
+}
+
+export async function fetchAdminEvents() {
+	const data = await getAdminEvents();
 	events.set(data);
 }

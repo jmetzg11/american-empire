@@ -1,5 +1,5 @@
 <script>
-	import Table from './components/Table.svelte';
+	import Table from '$lib/Table.svelte';
 	import { events, fetchEvents } from '$lib/store';
 	import { onMount } from 'svelte';
 

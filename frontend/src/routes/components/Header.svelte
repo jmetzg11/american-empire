@@ -4,6 +4,7 @@
 	const currentPath = $derived($page.url.pathname);
 	const isEventPage = $derived(currentPath.includes('/event/'));
 	const isContributePage = $derived(currentPath.includes('/contribute'));
+	const isAdminPage = $derived(currentPath.includes('/admin'));
 
 	let countries = $state(['Mexico', 'United Stated', 'Canada']);
 	let selectedCountry = $state('');
@@ -17,7 +18,7 @@
 
 <div class="border-b border-gray-300 bg-white p-4 shadow-sm">
 	<div class="mx-auto flex max-w-4xl items-center justify-between">
-		{#if isEventPage || isContributePage}
+		{#if isEventPage || isContributePage || isAdminPage}
 			<a href="/" class="btn"> Home </a>
 		{:else}
 			<div class="relative">
@@ -40,7 +41,7 @@
 		{/if}
 		{#if isEventPage}
 			<a href="/correction" class="btn"> Edit </a>
-		{:else if !isEventPage && !isContributePage}
+		{:else if !isEventPage && !isContributePage && !isAdminPage}
 			<a href="/contribute" class="btn"> Contribute </a>
 		{:else if isContributePage}
 			<div class="text-2xl font-bold text-gray-700">Contributions are welcome!</div>
