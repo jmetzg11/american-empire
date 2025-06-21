@@ -12,7 +12,7 @@ import (
 )
 
 func saveUploadedPhoto(c *gin.Context, file *multipart.FileHeader, eventID uint) (string, error) {
-	filename := fmt.Sprintf("%_d%s", time.Now().Unix(), file.Filename)
+	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), file.Filename)
 	dir := fmt.Sprintf("data/photos/%d", eventID)
 	os.MkdirAll(dir, 0755)
 	fullPath := fmt.Sprintf("%s/%s", dir, filename)

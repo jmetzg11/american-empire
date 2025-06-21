@@ -1,4 +1,5 @@
 <script>
+	import { fetchAdminEvents } from '$lib/store';
 	let { isAuthenticated = $bindable() } = $props();
 	let username = $state('');
 	let password = $state('');
@@ -15,6 +16,7 @@
 		});
 		if (response.ok) {
 			isAuthenticated = true;
+			await fetchAdminEvents();
 		}
 	};
 </script>
