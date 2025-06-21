@@ -11,6 +11,7 @@
 	let ableToSubmit = $derived(country && title && date && description && source.length > 0);
 	let showMediaModal = $state(false);
 	let showSourceModal = $state(false);
+	let submitted = $state(false);
 
 	function autoGrow(event) {
 		event.target.style.height = 'auto';
@@ -43,55 +44,78 @@
 		});
 
 		const response = await contributeEvent(formData);
-		console.log(response);
+		if (response.ok) {
+			console.log(response.ok);
+			submitted = true;
+			country = '';
+			title = '';
+			date = '';
+			description = '';
+			source = [];
+			media = [];
+		}
 	}
 </script>
 
 <div class="container-wrap">
 	<div class="card-style">
-		<div class="space-y-6">
-			<div>
-				<label for="title" class="label">Title *</label>
-				<input id="title" type="text" bind:value={title} class="input" placeholder="Enter title" />
-			</div>
-			<div class="flex justify-between">
+		{#if !submitted}
+			<div class="space-y-6">
 				<div>
-					<label for="country" class="label">Country *</label>
+					<label for="title" class="label">Title *</label>
 					<input
-						id="country"
+						id="title"
 						type="text"
-						bind:value={country}
+						bind:value={title}
 						class="input"
-						placeholder="Enter country"
+						placeholder="Enter title"
 					/>
 				</div>
+				<div class="flex justify-between">
+					<div>
+						<label for="country" class="label">Country *</label>
+						<input
+							id="country"
+							type="text"
+							bind:value={country}
+							class="input"
+							placeholder="Enter country"
+						/>
+					</div>
+					<div>
+						<label for="date" class="label">Date *</label>
+						<input id="date" type="date" bind:value={date} class="input" />
+					</div>
+				</div>
 				<div>
-					<label for="date" class="label">Date *</label>
-					<input id="date" type="date" bind:value={date} class="input" />
+					<label for="description" class="label">Description *</label>
+					<textarea
+						id="description"
+						bind:value={description}
+						class="input"
+						oninput={autoGrow}
+						placeholder="Enter description..."
+					></textarea>
+				</div>
+				<div class="flex justify-between">
+					<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">
+						Add Source * {source.length > 0 ? `(${source.length})` : ''}
+					</button>
+					<button type="button" onclick={() => (showMediaModal = true)} class="btn-secondary"
+						>Add Media {media.length > 0 ? `(${media.length})` : ''}</button
+					>
+					<button type="button" onclick={submitEvent} disabled={!ableToSubmit} class="btn">
+						Submit
+					</button>
 				</div>
 			</div>
-			<div>
-				<label for="description" class="label">Description *</label>
-				<textarea
-					id="description"
-					bind:value={description}
-					class="input"
-					oninput={autoGrow}
-					placeholder="Enter description..."
-				></textarea>
+		{:else}
+			<div class="mb-4 text-lg text-gray-700">
+				Thank you for contributing! We will review your submission and get back to you soon (if you
+				incluced your email).
 			</div>
-			<div class="flex justify-between">
-				<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">
-					Add Source * {source.length > 0 ? `(${source.length})` : ''}
-				</button>
-				<button type="button" onclick={() => (showMediaModal = true)} class="btn-secondary"
-					>Add Media {media.length > 0 ? `(${media.length})` : ''}</button
-				>
-				<button type="button" onclick={submitEvent} disabled={!ableToSubmit} class="btn">
-					Submit
-				</button>
-			</div>
-		</div>
+			<button class="btn-secondary" onclick={() => (submitted = false)}>Contribute Again</button>
+		{/if}
 	</div>
 </div>
 

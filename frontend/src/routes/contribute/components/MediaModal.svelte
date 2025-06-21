@@ -8,6 +8,13 @@
 		(photoFile && photoFile[0] && photoTitle) || (youtubeUrl && youtubeTitle)
 	);
 
+	function extractYouTubeId(url) {
+		const regex =
+			/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+		const match = url.match(regex);
+		return match ? match[1] : null;
+	}
+
 	function addMedia() {
 		if (photoFile?.[0] && photoTitle) {
 			media.push({
@@ -21,7 +28,7 @@
 		if (youtubeUrl && youtubeTitle) {
 			media.push({
 				type: 'youtube',
-				url: youtubeUrl,
+				url: extractYouTubeId(youtubeUrl),
 				title: youtubeTitle
 			});
 			youtubeTitle = '';

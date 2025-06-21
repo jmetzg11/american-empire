@@ -33,9 +33,20 @@ export async function contributeEvent(formData) {
 			method: 'POST',
 			body: formData
 		});
-		return await response.json();
+
+		const data = await response.json();
+
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
 	} catch (error) {
 		console.error('Error contributing event', error);
-		return { success: false, message: 'Failed to submit event' };
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to submit event' }
+		};
 	}
 }
