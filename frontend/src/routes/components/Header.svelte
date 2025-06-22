@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if isEventPage}
+		{#if isEventPage && !isAdminPage}
 			<a href="/correction" class="btn"> Edit </a>
 		{:else if !isEventPage && !isContributePage && !isAdminPage}
 			<a href="/contribute" class="btn"> Contribute </a>

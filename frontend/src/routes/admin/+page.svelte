@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { authMe } from '$lib/api';
 	import { fetchAdminEvents } from '$lib/store';
-	import Table from '$lib/Table.svelte';
+	import Table from '$lib/components/Table.svelte';
 	import Login from './components/Login.svelte';
 	let isAuthenticated = $state(false);
 

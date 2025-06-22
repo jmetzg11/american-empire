@@ -1,10 +1,14 @@
 <script>
-	import { events } from '$lib/store';
+	import { events, UIState } from '$lib/store';
 	import { formatDate } from '$lib/helpers';
 	import { goto } from '$app/navigation';
 
 	function handleRowClick(event) {
-		goto(`/event/${event.id}`);
+		if ($UIState === 'general') {
+			goto(`/event/${event.id}`);
+		} else {
+			goto(`/admin/event/${event.id}`);
+		}
 	}
 </script>
 
