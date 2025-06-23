@@ -1,5 +1,6 @@
 <script>
 	let { showMediaModal = $bindable(), media = $bindable() } = $props();
+	import { extractYouTubeId } from '$lib/helpers';
 	let photoTitle = $state('');
 	let photoFile = $state(null);
 	let youtubeTitle = $state('');
@@ -7,13 +8,6 @@
 	let canSubmit = $derived(
 		(photoFile && photoFile[0] && photoTitle) || (youtubeUrl && youtubeTitle)
 	);
-
-	function extractYouTubeId(url) {
-		const regex =
-			/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-		const match = url.match(regex);
-		return match ? match[1] : null;
-	}
 
 	function addMedia() {
 		if (photoFile?.[0] && photoTitle) {

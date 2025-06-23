@@ -13,7 +13,7 @@
 			oninput={(e) => onTitleChange(e.target.value)}
 			class="input"
 		/>
-
+		<label for="date" class="label mt-2">Date</label>
 		<input
 			id="date"
 			type="date"
@@ -21,7 +21,7 @@
 			oninput={(e) => onDateChange(e.target.value)}
 			class="input"
 		/>
-		<label for="text" class="label">Description</label>
+		<label for="text" class="label mt-2">Description</label>
 		<textarea
 			id="text"
 			class="input h-128"

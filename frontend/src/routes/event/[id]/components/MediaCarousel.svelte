@@ -1,6 +1,6 @@
 <script>
 	let { media } = $props();
-	import PhotoModal from '../../../../lib/components/PhotoModal.svelte';
+	import PhotoModal from '$lib/components/PhotoModal.svelte';
 	let currentIndex = $state(0);
 	let showPhotoModal = $state(false);
 	let selectedMedia = $state(null);

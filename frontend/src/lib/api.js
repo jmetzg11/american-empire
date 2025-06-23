@@ -84,3 +84,82 @@ export async function getAdminEvents() {
 		return false;
 	}
 }
+
+export async function uploadPhoto(formData) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-upload-photo`;
+		const response = await fetch(url, {
+			method: 'POST',
+			body: formData,
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error adding photo', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to upload photo' }
+		};
+	}
+}
+
+export async function uploadYoutube(formData) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-upload-youtube`;
+		const response = await fetch(url, {
+			method: 'POST',
+			body: formData,
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error adding youtube', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to upload youtube' }
+		};
+	}
+}
+
+export async function deleteMedia(id) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-delete-media`;
+		console.log(url);
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id }),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error deleting media', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to delete media' }
+		};
+	}
+}

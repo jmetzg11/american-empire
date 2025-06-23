@@ -12,14 +12,21 @@
 	let isEditing = $state(false);
 
 	onMount(async () => {
-		console.log('i was called, data id', data.id);
 		event = await getEvent(data.id);
-		console.log('event', event);
 	});
+
+	async function refreshEvent() {
+		event = await getEvent(data.id);
+	}
 
 	function updateField(field, value) {
 		isEditing = true;
 		eventEdit[field] = value;
+	}
+
+	function onFKChange(id, changes) {
+		isEditing = true;
+		eventEdit[id] = changes;
 	}
 
 	function approveEvent() {
@@ -46,7 +53,7 @@
 			onDateChange={(v) => updateField('Date', v)}
 			onTextChange={(v) => updateField('Description', v)}
 		/>
-		<Media media={event.Medias} />
+		<Media media={event.Medias} {onFKChange} {refreshEvent} />
 		<Sources sources={event.Sources} />
 	{:else}
 		<div>Loading...</div>
