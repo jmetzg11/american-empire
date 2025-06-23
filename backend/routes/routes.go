@@ -49,6 +49,8 @@ func SetupAPIRoutes(router *gin.Engine) {
 			adminRoutes.POST("/admin-upload-photo", handler.UploadPhoto)
 			adminRoutes.POST("/admin-upload-youtube", handler.UploadYoutube)
 			adminRoutes.POST("/admin-delete-media", handler.DeleteMedia)
+			adminRoutes.POST("/admin-delete-source", handler.DeleteSources)
+			adminRoutes.POST("/admin-add-source", handler.AddSources)
 		}
 	}
 }

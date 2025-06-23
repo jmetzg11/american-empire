@@ -163,3 +163,61 @@ export async function deleteMedia(id) {
 		};
 	}
 }
+
+export async function deleteSource(id) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-delete-source`;
+		console.log(url);
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id }),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error deleting source', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to delete source' }
+		};
+	}
+}
+
+export async function addSource(payload) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-add-source`;
+		console.log(url);
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(payload),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error adding source', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to add source' }
+		};
+	}
+}

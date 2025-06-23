@@ -51,16 +51,13 @@
 							></iframe>
 						{/if}
 					</div>
-					{#if mediaItem.Caption}
-						<input
-							type="text"
-							class="input my-2"
-							value={mediaItem.Caption}
-							oninput={(e) =>
-								onFKChange(mediaItem.Type + '-' + mediaItem.ID, 'Caption', e.target.value)}
-						/>
-						<button class="btn-danger" onclick={() => handleDelete(mediaItem)}>Remove</button>
-					{/if}
+					<input
+						type="text"
+						class="input my-2"
+						value={mediaItem.Caption}
+						oninput={(e) => onFKChange('media-' + mediaItem.ID, { Caption: e.target.value })}
+					/>
+					<button class="btn-danger" onclick={() => handleDelete(mediaItem)}>Remove</button>
 				</div>
 			{/each}
 			<div>

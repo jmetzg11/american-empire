@@ -54,7 +54,7 @@
 			onTextChange={(v) => updateField('Description', v)}
 		/>
 		<Media media={event.Medias} {onFKChange} {refreshEvent} />
-		<Sources sources={event.Sources} />
+		<Sources sources={event.Sources} {onFKChange} {refreshEvent} />
 	{:else}
 		<div>Loading...</div>
 	{/if}
