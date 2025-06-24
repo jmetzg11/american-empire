@@ -86,7 +86,7 @@ export async function getAdminEvents() {
 
 export async function editEvent(payload) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-edit-media`;
+		const url = `${import.meta.env.VITE_API_URL}/admin-edit-event`;
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -108,6 +108,34 @@ export async function editEvent(payload) {
 			ok: false,
 			status: 500,
 			data: { success: false, message: 'Failed to add source' }
+		};
+	}
+}
+
+export async function approveEvent(id) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-approve-event`;
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id }),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error approving event', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to approve event' }
 		};
 	}
 }

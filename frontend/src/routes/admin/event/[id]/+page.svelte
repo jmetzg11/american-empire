@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { getEvent, editEvent } from '$lib/api';
+	import { getEvent, editEvent, approveEvent } from '$lib/api';
 	import TopButtons from './components/TopButtons.svelte';
 	import Text from './components/Text.svelte';
 	import Media from './components/Media.svelte';
@@ -10,6 +10,7 @@
 	let event = $state(null);
 	let eventEdit = $state({});
 	let isEditing = $state(false);
+	let alreadyApproved = $derived(event?.Active !== null);
 
 	onMount(async () => {
 		event = await getEvent(data.id);
@@ -29,11 +30,16 @@
 		const result = await editEvent(eventEdit);
 		if (result.ok) {
 			await refreshEvent();
+			isEditing = false;
 		}
 	}
 
-	function handleApprove() {
-		$state.snapshot(eventEdit);
+	async function handleApprove() {
+		const result = await approveEvent(data.id);
+		console.log(result);
+		if (result.ok) {
+			await refreshEvent();
+		}
 	}
 
 	function handleDelete() {
@@ -48,7 +54,7 @@
 
 <div>
 	{#if event}
-		<TopButtons {handleApprove} {handleEdit} {handleDelete} {isEditing} />
+		<TopButtons {handleApprove} {handleEdit} {handleDelete} {isEditing} {alreadyApproved} />
 		<Text
 			title={event.Title}
 			country={event.Country}

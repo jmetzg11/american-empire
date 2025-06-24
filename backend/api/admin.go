@@ -27,7 +27,7 @@ func (h *Handler) GetAdminEvents(c *gin.Context) {
 	c.JSON(200, response)
 }
 
-func (h *Handler) EditMedia(c *gin.Context) {
+func (h *Handler) EditEvent(c *gin.Context) {
 	var payload map[string]interface{}
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid JSON"})
@@ -101,6 +101,29 @@ func (h *Handler) EditMedia(c *gin.Context) {
 
 	tx.Commit()
 	c.JSON(200, gin.H{"message": "Event edited"})
+}
+
+func (h *Handler) ApproveEvent(c *gin.Context) {
+	var request models.EventRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	now := time.Now()
+	result := h.DB.Model(&models.Event{}).Where("id = ?", request.ID).Update("active", &now)
+
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to approve event"})
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(404, gin.H{"error": "Event not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Event approved"})
 }
 
 func getMediaData(c *gin.Context) (models.Media, error) {
