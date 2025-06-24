@@ -46,6 +46,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 		adminRoutes.Use(handler.AdminMiddleware())
 		{
 			adminRoutes.GET("/admin-events", handler.GetAdminEvents)
+			adminRoutes.POST("/admin-edit-media", handler.EditMedia)
 			adminRoutes.POST("/admin-upload-photo", handler.UploadPhoto)
 			adminRoutes.POST("/admin-upload-youtube", handler.UploadYoutube)
 			adminRoutes.POST("/admin-delete-media", handler.DeleteMedia)

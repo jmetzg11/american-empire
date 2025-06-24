@@ -25,6 +25,7 @@ func (h *Handler) GetEvents(c *gin.Context) {
 }
 
 func (h *Handler) GetEvent(c *gin.Context) {
+	fmt.Println("GetEvent")
 	var request models.EventRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
@@ -32,7 +33,7 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	var event models.Event
-	query := h.DB.Select("id, title, date, description")
+	query := h.DB.Select("id, title, date, country, description")
 	query = query.Preload("Sources")
 	query = query.Preload("Medias")
 	query = query.Where("id = ?", request.ID)

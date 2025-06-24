@@ -1,5 +1,6 @@
 <script>
-	let { title, text, date, onTitleChange, onDateChange, onTextChange } = $props();
+	let { title, country, text, date, onTitleChange, onCountryChange, onDateChange, onTextChange } =
+		$props();
 	import { formatDate } from '$lib/helpers';
 </script>
 
@@ -11,6 +12,14 @@
 			type="text"
 			value={title}
 			oninput={(e) => onTitleChange(e.target.value)}
+			class="input"
+		/>
+		<label for="country" class="label">Country</label>
+		<input
+			id="country"
+			type="text"
+			value={country}
+			oninput={(e) => onCountryChange(e.target.value)}
 			class="input"
 		/>
 		<label for="date" class="label mt-2">Date</label>

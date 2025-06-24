@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { getEvent } from '$lib/api';
+	import { getEvent, editEvent } from '$lib/api';
 	import TopButtons from './components/TopButtons.svelte';
 	import Text from './components/Text.svelte';
 	import Media from './components/Media.svelte';
@@ -24,32 +24,38 @@
 		eventEdit[field] = value;
 	}
 
+	async function handleEdit() {
+		eventEdit['id'] = data.id;
+		const result = await editEvent(eventEdit);
+		if (result.ok) {
+			await refreshEvent();
+		}
+	}
+
+	function handleApprove() {
+		$state.snapshot(eventEdit);
+	}
+
+	function handleDelete() {
+		console.log('deleteEvent');
+	}
+
 	function onFKChange(id, changes) {
 		isEditing = true;
 		eventEdit[id] = changes;
-	}
-
-	function approveEvent() {
-		$inspect(event.ID);
-	}
-
-	function editEvent() {
-		$inspect(eventEdit);
-	}
-
-	function deleteEvent() {
-		console.log('deleteEvent');
 	}
 </script>
 
 <div>
 	{#if event}
-		<TopButtons {approveEvent} {editEvent} {deleteEvent} {isEditing} />
+		<TopButtons {handleApprove} {handleEdit} {handleDelete} {isEditing} />
 		<Text
 			title={event.Title}
+			country={event.Country}
 			text={event.Description}
 			date={event.Date}
 			onTitleChange={(v) => updateField('Title', v)}
+			onCountryChange={(v) => updateField('Country', v)}
 			onDateChange={(v) => updateField('Date', v)}
 			onTextChange={(v) => updateField('Description', v)}
 		/>

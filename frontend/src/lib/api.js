@@ -35,7 +35,6 @@ export async function contributeEvent(formData) {
 		});
 
 		const data = await response.json();
-		console.log(data);
 
 		return {
 			ok: response.ok,
@@ -82,6 +81,34 @@ export async function getAdminEvents() {
 	} catch (error) {
 		console.error('Error posting blog', error);
 		return false;
+	}
+}
+
+export async function editEvent(payload) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-edit-media`;
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(payload),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error adding source', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to add source' }
+		};
 	}
 }
 
@@ -138,7 +165,6 @@ export async function uploadYoutube(formData) {
 export async function deleteMedia(id) {
 	try {
 		const url = `${import.meta.env.VITE_API_URL}/admin-delete-media`;
-		console.log(url);
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -167,7 +193,6 @@ export async function deleteMedia(id) {
 export async function deleteSource(id) {
 	try {
 		const url = `${import.meta.env.VITE_API_URL}/admin-delete-source`;
-		console.log(url);
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -196,7 +221,6 @@ export async function deleteSource(id) {
 export async function addSource(payload) {
 	try {
 		const url = `${import.meta.env.VITE_API_URL}/admin-add-source`;
-		console.log(url);
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {

@@ -5,6 +5,8 @@ import (
 	"good-guys/backend/models"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +25,82 @@ func (h *Handler) GetAdminEvents(c *gin.Context) {
 		})
 	}
 	c.JSON(200, response)
+}
+
+func (h *Handler) EditMedia(c *gin.Context) {
+	var payload map[string]interface{}
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	eventID, exists := payload["id"]
+	if !exists {
+		c.JSON(400, gin.H{"error": "Event ID is required"})
+		return
+	}
+
+	var event models.Event
+	if err := h.DB.Preload("Sources").Preload("Medias").First(&event, eventID).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Event not found"})
+		return
+	}
+
+	tx := h.DB.Begin()
+
+	if title, ok := payload["Title"].(string); ok {
+		event.Title = title
+	}
+	if desc, ok := payload["Description"].(string); ok {
+		event.Description = desc
+	}
+	if country, ok := payload["Country"].(string); ok {
+		event.Country = country
+	}
+	if dateStr, ok := payload["Date"].(string); ok {
+		if date, err := time.Parse("2006-01-02", dateStr); err == nil {
+			event.Date = date
+		}
+	}
+
+	if err := tx.Save(&event).Error; err != nil {
+		tx.Rollback()
+		c.JSON(500, gin.H{"error": "Failed to update event"})
+		return
+	}
+
+	for key, value := range payload {
+		if strings.HasPrefix(key, "media-") {
+			mediaIDStr := strings.TrimPrefix(key, "media-")
+			mediaID, err := strconv.ParseUint(mediaIDStr, 10, 32)
+			if err != nil {
+				continue
+			}
+
+			if mediaData, ok := value.(map[string]interface{}); ok {
+				if caption, ok := mediaData["Caption"].(string); ok {
+					tx.Model(&models.Media{}).Where("id = ?", mediaID).Update("caption", caption)
+				}
+			}
+		}
+
+		if strings.HasPrefix(key, "source-") {
+			sourceIDStr := strings.TrimPrefix(key, "source-")
+			sourceID, err := strconv.ParseUint(sourceIDStr, 10, 32)
+			if err != nil {
+				continue
+			}
+
+			if sourceData, ok := value.(map[string]interface{}); ok {
+				if name, ok := sourceData["Name"].(string); ok {
+					tx.Model(&models.Source{}).Where("id = ?", sourceID).Update("name", name)
+				}
+			}
+		}
+	}
+
+	tx.Commit()
+	c.JSON(200, gin.H{"message": "Event edited"})
 }
 
 func getMediaData(c *gin.Context) (models.Media, error) {
