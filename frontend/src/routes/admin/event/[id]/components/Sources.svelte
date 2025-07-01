@@ -32,27 +32,24 @@
 
 <div class="container-wrap">
 	<div class="card-style">
-		<div class="mb-4 text-sm text-gray-500">
-			can edit names, but must delete links to change them
-		</div>
-		<h2 class="mb-2 text-2xl font-bold text-gray-900">Sources</h2>
+		<div class="small-info-text mb-4">can edit names, but must delete links to change them</div>
+		<h2 class="section-title">Sources</h2>
 		{#each sources as source}
-			<div class="mb-4 border-b border-gray-200 pb-8 last:border-b-0">
+			<div class="source-row-admin">
 				<input
 					type="text"
 					class="input"
 					value={source.Name}
 					oninput={(e) => onFKChange('source-' + source.ID, { Name: e.target.value })}
 				/>
-				<div class="mt-4 flex items-center justify-between">
-					<a href={source.URL} target="_blank" class="text-blue-500 hover:underline">{source.URL}</a
-					>
+				<div class="flex-center-between mt-4">
+					<a href={source.URL} target="_blank" class="a-link">{source.URL}</a>
 					<button class="btn-danger" onclick={() => handleDelete(source)}> Remove </button>
 				</div>
 			</div>
 		{/each}
-		<h2 class="mb-2 text-2xl font-bold text-gray-900">New Source</h2>
-		<div class="flex flex-col gap-2">
+		<h2 class="section-title">New Source</h2>
+		<div class="flex-col-gap-2">
 			<input type="text" class="input" placeholder="Name" bind:value={sourceName} />
 			<input type="text" class="input" placeholder="URL" bind:value={sourceURL} />
 			<button class="btn" onclick={handleSave}>Save</button>

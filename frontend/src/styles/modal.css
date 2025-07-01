@@ -1,0 +1,7 @@
+.modal-wrapper {
+	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4;
+}
+
+.modal-content {
+	@apply mx-4 w-full max-w-5xl rounded-lg bg-white p-6;
+}

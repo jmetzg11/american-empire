@@ -62,7 +62,7 @@
 <div class="container-wrap">
 	<div class="card-style">
 		{#if !submitted}
-			<div class="space-y-6">
+			<div class="flex-col-gap-6">
 				<div>
 					<label for="title" class="label">Title *</label>
 					<input
@@ -73,7 +73,7 @@
 						placeholder="Enter title"
 					/>
 				</div>
-				<div class="flex justify-between">
+				<div class="flex-center-between">
 					<div>
 						<label for="country" class="label">Country *</label>
 						<input
@@ -109,7 +109,7 @@
 						placeholder="Enter email"
 					/>
 				</div>
-				<div class="flex justify-between">
+				<div class="flex-center-between">
 					<button type="button" onclick={() => (showSourceModal = true)} class="btn-secondary">
 						Add Source * {source.length > 0 ? `(${source.length})` : ''}
 					</button>
@@ -122,7 +122,7 @@
 				</div>
 			</div>
 		{:else}
-			<div class="mb-4 text-lg text-gray-700">
+			<div class="mb-4 text-lg">
 				Thank you for contributing! We will review your submission and get back to you soon (if you
 				incluced your email).
 			</div>

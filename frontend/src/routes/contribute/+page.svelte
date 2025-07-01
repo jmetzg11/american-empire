@@ -6,13 +6,9 @@
 
 <div class="container-wrap">
 	<div class="card-style">
-		<div class="flex items-center justify-between">
-			<span class="text-gray-700">Code contributions are welcome!</span>
-			<a
-				href="https://github.com/jmetzg11/we-are-the-good-guys/"
-				target="_blank"
-				class="font-medium text-blue-600 underline transition-colors duration-200 hover:text-blue-800 hover:no-underline"
-			>
+		<div class="flex-center-between">
+			<span class="text-lg">Code contributions are welcome!</span>
+			<a href="https://github.com/jmetzg11/we-are-the-good-guys/" target="_blank" class="a-link">
 				Repository
 			</a>
 		</div>

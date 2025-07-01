@@ -17,7 +17,7 @@
 		<div class="modal-content">
 			<h2 class="new-info-modal-title">Delete Sources?</h2>
 			<div class="mb-6">
-				<div class=" mb-2 text-gray-600">{selectedSource.Name}</div>
+				<div class="normal-text mb-2">{selectedSource.Name}</div>
 				<a href={selectedSource.URL} target="_blank" class="text-blue-500 hover:underline"
 					>{selectedSource.URL}</a
 				>

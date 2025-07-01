@@ -16,7 +16,7 @@
 	<div class="modal-wrapper">
 		<div class="modal-content">
 			<h2 class="new-info-modal-title">Delete {media.Type === 'photo' ? 'Photo' : 'Youtube'}?</h2>
-			<div class="mb-6 text-gray-600">{media.Caption}</div>
+			<div class="normal-text mb-6">{media.Caption}</div>
 			<div class="new-info-button-container">
 				<button class="btn-secondary" onclick={() => (showDeleteModal = false)}>Cancel</button>
 				<button class="btn-danger" onclick={() => handleDelete()}>Delete</button>

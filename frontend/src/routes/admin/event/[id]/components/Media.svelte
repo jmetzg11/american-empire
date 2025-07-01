@@ -21,30 +21,27 @@
 
 <div class="container-wrap">
 	<div class="card-style">
-		<div class="mb-4 text-sm text-gray-500">
+		<div class="small-info-text mb-4">
 			can edit captions, but must delete photo/vidoes to change them
 		</div>
 
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		<div class="grid-section">
 			{#each media as mediaItem}
 				<div class="flex flex-col">
 					<div class="aspect-square">
 						{#if mediaItem.Type === 'photo'}
-							<button
-								class="h-full w-full cursor-pointer"
-								onclick={() => openPhotoModal(mediaItem)}
-							>
+							<button class="img-button" onclick={() => openPhotoModal(mediaItem)}>
 								<img
 									src={`${import.meta.env.VITE_PHOTO_URL}/${mediaItem.Path}`}
 									alt={mediaItem.Caption}
-									class="h-full w-full rounded object-cover"
+									class="img-preview"
 								/></button
 							>
 						{:else}
 							<iframe
 								src="https://www.youtube.com/embed/{mediaItem.URL}"
 								title="YouTube video player"
-								class="h-full w-full rounded"
+								class="youtube-preview"
 								frameborder="0"
 								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 								allowfullscreen
