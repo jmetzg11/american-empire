@@ -15,9 +15,9 @@ func (h *Handler) GetAdminEvents(c *gin.Context) {
 	var events []models.Event
 	h.DB.Select("id, title, date, country").Where("active IS NULL").Find(&events)
 
-	var response []models.DataResponse
+	var response []models.MainTableResponse
 	for _, event := range events {
-		response = append(response, models.DataResponse{
+		response = append(response, models.MainTableResponse{
 			ID:      event.ID,
 			Title:   event.Title,
 			Date:    event.Date,

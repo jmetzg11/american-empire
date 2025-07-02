@@ -10,17 +10,23 @@ import (
 
 func (h *Handler) GetEvents(c *gin.Context) {
 	var events []models.Event
-	h.DB.Select("id, title, date, country").Where("active IS NOT NULL").Find(&events)
+	h.DB.Select("id, title, date, country").Preload("Tags").Where("active IS NOT NULL").Find(&events)
 
-	var response []models.DataResponse
+	var response []models.MainTableResponse
 	for _, event := range events {
-		response = append(response, models.DataResponse{
+		var tags []string
+		for _, tag := range event.Tags {
+			tags = append(tags, tag.Name)
+		}
+		response = append(response, models.MainTableResponse{
 			ID:      event.ID,
 			Title:   event.Title,
 			Date:    event.Date,
 			Country: event.Country,
+			Tags:    tags,
 		})
 	}
+	fmt.Println(response)
 	c.JSON(200, response)
 }
 

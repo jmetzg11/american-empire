@@ -10,6 +10,8 @@
 			goto(`/admin/event/${event.id}`);
 		}
 	}
+
+	$inspect($events);
 </script>
 
 <div class="container-wrap">
@@ -20,6 +22,7 @@
 					<th class="th">Country</th>
 					<th class="th">Title</th>
 					<th class="th">Date</th>
+					<th class="th">Tags</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-gray-100">
@@ -31,6 +34,17 @@
 						<td class="td">{event.country}</td>
 						<td class="td">{event.title}</td>
 						<td class="td">{formatDate(event.date)}</td>
+						<td class="td">
+							<div class="flex flex-wrap gap-1">
+								{#each event.tags as tag}
+									<span
+										class="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800"
+									>
+										{tag}
+									</span>
+								{/each}
+							</div>
+						</td>
 					</tr>
 				{/each}
 			</tbody>

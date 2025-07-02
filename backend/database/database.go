@@ -32,6 +32,7 @@ func Connect() error {
 		&models.Event{},
 		&models.Source{},
 		&models.Media{},
+		&models.Tag{},
 	)
 
 	seedDB(DB)

@@ -6,6 +6,7 @@ export const UIState = writable('general');
 
 export async function fetchEvents() {
 	const data = await getEvents();
+	console.log(data);
 	events.set(data);
 	UIState.set('general');
 }
