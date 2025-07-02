@@ -140,6 +140,34 @@ export async function approveEvent(id) {
 	}
 }
 
+export async function unapproveEvent(id) {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/admin-unapprove-event`;
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id }),
+			credentials: 'include'
+		});
+
+		const data = await response.json();
+		return {
+			ok: response.ok,
+			status: response.status,
+			data: data
+		};
+	} catch (error) {
+		console.error('Error unapproving event', error);
+		return {
+			ok: false,
+			status: 500,
+			data: { success: false, message: 'Failed to approve event' }
+		};
+	}
+}
+
 export async function uploadPhoto(formData) {
 	try {
 		const url = `${import.meta.env.VITE_API_URL}/admin-upload-photo`;

@@ -126,6 +126,28 @@ func (h *Handler) ApproveEvent(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Event approved"})
 }
 
+func (h *Handler) UnapproveEvent(c *gin.Context) {
+	var request models.EventRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	result := h.DB.Model(&models.Event{}).Where("id = ?", request.ID).Update("active", nil)
+
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to unapprove event"})
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(404, gin.H{"error": "Event not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Event unapproved"})
+}
+
 func getMediaData(c *gin.Context) (models.Media, error) {
 	eventId, err := strconv.ParseUint(c.PostForm("event_id"), 10, 32)
 	if err != nil {

@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { getEvent, editEvent, approveEvent } from '$lib/api';
+	import { getEvent, editEvent, approveEvent, unapproveEvent } from '$lib/api';
 	import TopButtons from './components/TopButtons.svelte';
 	import Text from './components/Text.svelte';
 	import Media from './components/Media.svelte';
@@ -42,6 +42,13 @@
 		}
 	}
 
+	async function handleUnapprove() {
+		const result = await unapproveEvent(data.id);
+		if (result.ok) {
+			await refreshEvent();
+		}
+	}
+
 	function handleDelete() {
 		console.log('deleteEvent');
 	}
@@ -54,7 +61,14 @@
 
 <div>
 	{#if event}
-		<TopButtons {handleApprove} {handleEdit} {handleDelete} {isEditing} {alreadyApproved} />
+		<TopButtons
+			{handleApprove}
+			{handleUnapprove}
+			{handleEdit}
+			{handleDelete}
+			{isEditing}
+			{alreadyApproved}
+		/>
 		<Text
 			title={event.Title}
 			country={event.Country}
