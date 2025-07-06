@@ -37,9 +37,7 @@
 						<td class="td">
 							<div class="flex flex-wrap gap-1">
 								{#each event.tags as tag}
-									<span
-										class="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800"
-									>
+									<span class="tag">
 										{tag}
 									</span>
 								{/each}

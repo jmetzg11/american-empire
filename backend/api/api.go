@@ -10,7 +10,14 @@ import (
 
 func (h *Handler) GetEvents(c *gin.Context) {
 	var events []models.Event
-	h.DB.Select("id, title, date, country").Preload("Tags").Where("active IS NOT NULL").Find(&events)
+	query := h.DB.Select("id, title, date, country")
+	query = query.Preload("Tags")
+	query = query.Where("active IS NOT NULL")
+	result := query.Find(&events)
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to get events"})
+		return
+	}
 
 	var response []models.MainTableResponse
 	for _, event := range events {
@@ -26,7 +33,6 @@ func (h *Handler) GetEvents(c *gin.Context) {
 			Tags:    tags,
 		})
 	}
-	fmt.Println(response)
 	c.JSON(200, response)
 }
 
@@ -38,7 +44,8 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	var event models.Event
-	query := h.DB.Preload("Sources")
+	query := h.DB.Preload("Tags")
+	query = query.Preload("Sources")
 	query = query.Preload("Medias")
 	query = query.Where("id = ?", request.ID)
 	result := query.First(&event)

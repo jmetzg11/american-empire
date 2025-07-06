@@ -11,11 +11,13 @@
 	onMount(async () => {
 		event = await getEvent(data.id);
 	});
+
+	$inspect(event);
 </script>
 
 <div>
 	{#if event}
-		<Text title={event.Title} text={event.Description} date={event.Date} />
+		<Text title={event.Title} tags={event.Tags} text={event.Description} date={event.Date} />
 		{#if event.Medias.length > 0}
 			<MediaCarousel media={event.Medias} />
 		{/if}
