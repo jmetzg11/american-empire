@@ -2,10 +2,12 @@
 	import { contributeEvent } from '$lib/api';
 	import MediaModal from './MediaModal.svelte';
 	import SourceModal from './SourceModal.svelte';
+	import TagsComponent from './TagsComponent.svelte';
 	let country = $state('');
 	let title = $state('');
 	let date = $state('');
 	let description = $state('');
+	let tags = $state([]);
 	let email = $state('');
 	let media = $state([]);
 	let source = $state([]);
@@ -26,6 +28,7 @@
 		formData.append('title', title);
 		formData.append('date', date);
 		formData.append('description', description);
+		formData.append('tags', tags.join(', '));
 		formData.append('email', email);
 
 		source.forEach((src, index) => {
@@ -99,6 +102,7 @@
 						placeholder="Enter description..."
 					></textarea>
 				</div>
+				<TagsComponent />
 				<div>
 					<label for="email" class="label">Your Email (optional)</label>
 					<input

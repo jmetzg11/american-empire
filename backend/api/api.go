@@ -141,3 +141,14 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 
 	c.JSON(200, gin.H{"message": "Event contributed successfully"})
 }
+
+func (h *Handler) GetTags(c *gin.Context) {
+	var tags []models.Tag
+	result := h.DB.Order("LOWER(name) ASC").Find(&tags)
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to get tags"})
+		return
+	}
+
+	c.JSON(200, tags)
+}

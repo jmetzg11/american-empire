@@ -38,6 +38,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 		apiRouter.GET("/", handler.GetEvents)
 		apiRouter.POST("/event", handler.GetEvent)
 		apiRouter.POST("/contribute", handler.ContributeEvent)
+		apiRouter.GET("/tags", handler.GetTags)
 
 		// admin routes
 		apiRouter.GET("/auth-me", mgin.NewMiddleware(authLimiter), handler.AuthMe)
