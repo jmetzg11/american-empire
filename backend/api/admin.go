@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"good-guys/backend/models"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func (h *Handler) GetAdminEvents(c *gin.Context) {
@@ -27,6 +29,39 @@ func (h *Handler) GetAdminEvents(c *gin.Context) {
 	c.JSON(200, response)
 }
 
+func updateEventTags(tx *gorm.DB, event *models.Event, tagsStr string) error {
+	tagNames := strings.Split(tagsStr, ", ")
+	var eventTags []models.Tag
+
+	for _, tagName := range tagNames {
+		tagName = strings.TrimSpace(tagName)
+		if tagName == "" {
+			continue
+		}
+
+		var tag models.Tag
+		if err := tx.Where("name = ?", tagName).First(&tag).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				tag = models.Tag{Name: tagName}
+				if err := tx.Create(&tag).Error; err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
+		}
+		eventTags = append(eventTags, tag)
+	}
+	if err := tx.Model(event).Association("Tags").Replace(eventTags); err != nil {
+		return err
+	}
+
+	// clean up orphaned tags
+	tx.Where("id NOT IN (SELECT DISTINCT tag_id FROM event_tags)").Delete(&models.Tag{})
+
+	return nil
+}
+
 func (h *Handler) EditEvent(c *gin.Context) {
 	var payload map[string]interface{}
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -41,7 +76,10 @@ func (h *Handler) EditEvent(c *gin.Context) {
 	}
 
 	var event models.Event
-	if err := h.DB.Preload("Sources").Preload("Medias").First(&event, eventID).Error; err != nil {
+	query := h.DB.Preload("Sources")
+	query = query.Preload("Medias")
+	result := query.First(&event, eventID)
+	if result.Error != nil {
 		c.JSON(404, gin.H{"error": "Event not found"})
 		return
 	}
@@ -67,6 +105,14 @@ func (h *Handler) EditEvent(c *gin.Context) {
 		tx.Rollback()
 		c.JSON(500, gin.H{"error": "Failed to update event"})
 		return
+	}
+
+	if tags, ok := payload["Tags"].(string); ok {
+		if err := updateEventTags(tx, &event, tags); err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to update event tags"})
+			return
+		}
 	}
 
 	for key, value := range payload {

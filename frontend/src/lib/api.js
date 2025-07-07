@@ -97,6 +97,11 @@ export async function editEvent(payload) {
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
