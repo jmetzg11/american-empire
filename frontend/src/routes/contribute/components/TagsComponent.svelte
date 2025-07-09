@@ -5,7 +5,21 @@
 
 	let allTags = $state([]);
 	let newTag = $state('');
+	let tagFilter = $state('');
 	let selectedTagId = $state('');
+	let showDropDown = $state(false);
+
+	let filteredTags = $derived(
+		allTags.filter((tag) => tag.Name.toLowerCase().includes(tagFilter.toLowerCase()))
+	);
+
+	function selectTag(tag) {
+		if (!tags.includes(tag.Name)) {
+			tags.push(tag.Name);
+		}
+		tagFilter = '';
+		showDropDown = false;
+	}
 
 	function addTag() {
 		if (newTag.trim() && !allTags.some((tag) => tag.Name === newTag.trim())) {
@@ -33,12 +47,29 @@
 		{/each}
 	</div>
 	<div class="flex-center-between">
-		<div>
-			<select bind:value={selectedTagId}>
-				{#each allTags as tag}
-					<option value={tag.ID}>{tag.Name}</option>
-				{/each}
-			</select>
+		<div style="position: relative;">
+			<input
+				type="text"
+				bind:value={tagFilter}
+				placeholder="Search tags..."
+				onfocus={() => (showDropDown = true)}
+				onblur={() => setTimeout(() => (showDropDown = false), 200)}
+			/>
+			{#if showDropDown && filteredTags.length > 0}
+				<div class="dropdown">
+					{#each filteredTags.slice(0, 10) as tag}
+						<div
+							class="dropdown-item"
+							role="button"
+							onclick={() => selectTag(tag)}
+							onkeydown={(e) => e.key === 'Enter' && selectTag(tag)}
+							tabindex="0"
+						>
+							{tag.Name}
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<div>
 			<label for="newTag">new tag</label>
@@ -47,3 +78,25 @@
 		<button class="btn-secondary" onclick={addTag}>add</button>
 	</div>
 </div>
+
+<style>
+	.dropdown {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: white;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		max-height: 200px;
+		overflow-y: auto;
+		z-index: 1000;
+	}
+	.dropdown-item {
+		padding: 8px 12px;
+		cursor: pointer;
+	}
+	.dropdown-item:hover {
+		background: #f0f0f0;
+	}
+</style>
