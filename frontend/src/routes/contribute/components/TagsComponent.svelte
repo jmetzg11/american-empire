@@ -41,41 +41,49 @@
 </script>
 
 <div>
-	<div>
+	<div class="mb-2 flex flex-wrap gap-2">
 		{#each tags as tag}
 			<span class="tag">{tag}</span>
 		{/each}
 	</div>
 	<div class="flex-center-between">
-		<div style="position: relative;">
-			<input
-				type="text"
-				bind:value={tagFilter}
-				placeholder="Search tags..."
-				onfocus={() => (showDropDown = true)}
-				onblur={() => setTimeout(() => (showDropDown = false), 200)}
-			/>
-			{#if showDropDown && filteredTags.length > 0}
-				<div class="dropdown">
-					{#each filteredTags.slice(0, 10) as tag}
-						<div
-							class="dropdown-item"
-							role="button"
-							onclick={() => selectTag(tag)}
-							onkeydown={(e) => e.key === 'Enter' && selectTag(tag)}
-							tabindex="0"
-						>
-							{tag.Name}
-						</div>
-					{/each}
-				</div>
-			{/if}
+		<div class="flex items-end gap-4">
+			<div style="position: relative;">
+				<label for="existingTags" class="label">Existing Tags</label>
+				<input
+					type="text"
+					bind:value={tagFilter}
+					id="existingTags"
+					class="input"
+					placeholder="Search tags..."
+					onfocus={() => (showDropDown = true)}
+					onblur={() => setTimeout(() => (showDropDown = false), 200)}
+				/>
+				{#if showDropDown && filteredTags.length > 0}
+					<div class="dropdown">
+						{#each filteredTags.slice(0, 10) as tag}
+							<div
+								class="dropdown-item"
+								role="button"
+								onclick={() => selectTag(tag)}
+								onkeydown={(e) => e.key === 'Enter' && selectTag(tag)}
+								tabindex="0"
+							>
+								{tag.Name}
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</div>
+			<button class="btn-secondary mb-2" onclick={addTag}>Add Existing Tag</button>
 		</div>
-		<div>
-			<label for="newTag">new tag</label>
-			<input type="text" id="newTag" bind:value={newTag} />
+		<div class="flex items-end gap-4">
+			<div>
+				<label for="newTag" class="label">New Tag</label>
+				<input type="text" id="newTag" bind:value={newTag} class="input" />
+			</div>
+			<button class="btn-secondary mb-2" onclick={addTag}>Add New Tag</button>
 		</div>
-		<button class="btn-secondary" onclick={addTag}>add</button>
 	</div>
 </div>
 

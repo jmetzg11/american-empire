@@ -11,8 +11,6 @@
 	onMount(async () => {
 		event = await getEvent(data.id);
 	});
-
-	$inspect(event);
 </script>
 
 <div>

@@ -16,6 +16,8 @@
 	let showSourceModal = $state(false);
 	let submitted = $state(false);
 
+	$inspect(tags);
+
 	function autoGrow(event) {
 		event.target.style.height = 'auto';
 		event.target.style.height = event.target.scrollHeight + 'px';
@@ -102,7 +104,7 @@
 						placeholder="Enter description..."
 					></textarea>
 				</div>
-				<TagsComponent />
+				<TagsComponent bind:tags />
 				<div>
 					<label for="email" class="label">Your Email (optional)</label>
 					<input

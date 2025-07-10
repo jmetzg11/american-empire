@@ -1,11 +1,14 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"good-guys/backend/models"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func (h *Handler) GetEvents(c *gin.Context) {
@@ -58,6 +61,36 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	c.JSON(200, event)
 }
 
+func addTagsToContriubtionEvent(tx *gorm.DB, event *models.Event, tags string) error {
+	tagNames := strings.Split(tags, ", ")
+	var eventTags []models.Tag
+
+	for _, tagName := range tagNames {
+		tagName = strings.TrimSpace(tagName)
+		if tagName == "" {
+			continue
+		}
+
+		var tag models.Tag
+		if err := tx.Where("name = ?", tagName).First(&tag).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				tag = models.Tag{Name: tagName}
+				if err := tx.Create(&tag).Error; err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
+		}
+		eventTags = append(eventTags, tag)
+	}
+	if err := tx.Model(event).Association("Tags").Replace(eventTags); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (h *Handler) ContributeEvent(c *gin.Context) {
 	var event models.Event
 
@@ -73,9 +106,21 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 	}
 	event.Date = parsedDate
 
+	tx := h.DB.Begin()
+
 	if err := h.DB.Create(&event).Error; err != nil {
+		tx.Rollback()
 		c.JSON(500, gin.H{"error": "Failed to create event"})
 		return
+	}
+
+	tags := c.PostForm("tags")
+	if tags != "" {
+		if err := addTagsToContriubtionEvent(tx, &event, tags); err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to add tags"})
+			return
+		}
 	}
 
 	form, _ := c.MultipartForm()
@@ -96,7 +141,11 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 			Name:    names[0],
 			URL:     urls[0],
 		}
-		h.DB.Create(&source)
+		if err := tx.Create(&source).Error; err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to create source"})
+			return
+		}
 	}
 
 	for i := 0; ; i++ {
@@ -133,9 +182,14 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 				media.Caption = captions[0]
 			}
 		}
-
-		h.DB.Create(&media)
+		if err := tx.Create(&media).Error; err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to create media"})
+			return
+		}
 	}
+
+	tx.Commit()
 
 	notifyAdmin(form.Value["email"][0], &event)
 

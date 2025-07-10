@@ -10,8 +10,6 @@
 			goto(`/admin/event/${event.id}`);
 		}
 	}
-
-	$inspect($events);
 </script>
 
 <div class="container-wrap">
