@@ -17,6 +17,15 @@ func seedDB(db *gorm.DB) {
 	}
 	activeDate := time.Date(2025, 6, 15, 0, 0, 0, 0, time.UTC)
 
+	tags := map[string]*models.Tag{}
+	tagNames := []string{"CIA", "Propaganda", "Cold War", "Journalism", "South America", "Human Rights", "Weapons", "Nicaragua", "Iran", "Reagan"}
+
+	for _, name := range tagNames {
+		tag := &models.Tag{Name: name}
+		db.FirstOrCreate(tag, models.Tag{Name: name})
+		tags[name] = tag
+	}
+
 	events := []models.Event{
 		{
 			Title:   "CIA Operation Mockingbird",
@@ -31,6 +40,12 @@ func seedDB(db *gorm.DB) {
    - Creation of propaganda materials
    - Coordination with foreign intelligence services`,
 			Active: &activeDate,
+			Tags: []models.Tag{
+				*tags["CIA"],
+				*tags["Propaganda"],
+				*tags["Cold War"],
+				*tags["Journalism"],
+			},
 			Sources: []models.Source{
 				{Name: "Church Committee Report", URL: "https://archive.org/details/churchcommittee"},
 				{Name: "Declassified CIA Documents", URL: "https://cia.gov/mockingbird-files"},
@@ -56,6 +71,12 @@ func seedDB(db *gorm.DB) {
    - Joint military operations
    - Systematic human rights violations`,
 			Active: &activeDate,
+			Tags: []models.Tag{
+				*tags["CIA"],
+				*tags["South America"],
+				*tags["Human Rights"],
+				*tags["Cold War"],
+			},
 			Sources: []models.Source{
 				{Name: "National Security Archive", URL: "https://nsarchive.gwu.edu/condor-files"},
 				{Name: "FBI FOIA Release", URL: "https://fbi.gov/condor-documents"},
@@ -78,6 +99,12 @@ func seedDB(db *gorm.DB) {
    - Diversion of proceeds to Contra rebels
    - Circumvention of congressional oversight`,
 			Active: &activeDate,
+			Tags: []models.Tag{
+				*tags["Weapons"],
+				*tags["Nicaragua"],
+				*tags["Iran"],
+				*tags["Reagan"],
+			},
 			Sources: []models.Source{
 				{Name: "Tower Commission Report", URL: "https://reagan.library.gov/tower-commission"},
 				{Name: "Walsh Report", URL: "https://justice.gov/walsh-final-report"},

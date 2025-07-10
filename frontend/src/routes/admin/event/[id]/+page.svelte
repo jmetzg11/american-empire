@@ -36,7 +36,6 @@
 
 	async function handleApprove() {
 		const result = await approveEvent(data.id);
-		console.log(result);
 		if (result.ok) {
 			await refreshEvent();
 		}
@@ -71,10 +70,12 @@
 		/>
 		<Text
 			title={event.Title}
+			tags={event.Tags.map((tag) => tag.Name).join(', ')}
 			country={event.Country}
 			text={event.Description}
 			date={event.Date}
 			onTitleChange={(v) => updateField('Title', v)}
+			onTagsChange={(v) => updateField('Tags', v)}
 			onCountryChange={(v) => updateField('Country', v)}
 			onDateChange={(v) => updateField('Date', v)}
 			onTextChange={(v) => updateField('Description', v)}

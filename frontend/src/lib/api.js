@@ -51,6 +51,17 @@ export async function contributeEvent(formData) {
 	}
 }
 
+export async function getTags() {
+	try {
+		const url = `${import.meta.env.VITE_API_URL}/tags`;
+		const response = await fetch(url);
+		return await response.json();
+	} catch (error) {
+		console.error('Error fetching tags', error);
+		return false;
+	}
+}
+
 // Admin
 
 export async function authMe() {
@@ -97,6 +108,11 @@ export async function editEvent(payload) {
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,

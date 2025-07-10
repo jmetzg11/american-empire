@@ -1,7 +1,19 @@
 <script>
-	let { title, country, text, date, onTitleChange, onCountryChange, onDateChange, onTextChange } =
-		$props();
+	let {
+		title,
+		tags,
+		country,
+		text,
+		date,
+		onTitleChange,
+		onTagsChange,
+		onCountryChange,
+		onDateChange,
+		onTextChange
+	} = $props();
 	import { formatDate } from '$lib/helpers';
+
+	let newTag = $state('');
 </script>
 
 <div class="container-wrap">
@@ -14,6 +26,16 @@
 			oninput={(e) => onTitleChange(e.target.value)}
 			class="input"
 		/>
+
+		<label for="tags" class="label">Tags</label>
+		<input
+			id="tags"
+			type="text"
+			value={tags}
+			oninput={(e) => onTagsChange(e.target.value)}
+			class="input"
+		/>
+
 		<label for="country" class="label">Country</label>
 		<input
 			id="country"

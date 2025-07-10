@@ -62,6 +62,10 @@
 	@apply ml-4 list-disc text-sm text-gray-600;
 }
 
+.tag {
+	@apply cursor-pointer rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800;
+}
+
 /* Forms */
 
 .label {
@@ -69,7 +73,7 @@
 }
 
 .input {
-	@apply w-full rounded-md border border-gray-300 px-3 py-2 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+	@apply mb-2 w-full rounded-md border border-gray-300 px-3 py-2 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none;
 }
 
 /* Buttons */

@@ -1,24 +1,39 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"good-guys/backend/models"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func (h *Handler) GetEvents(c *gin.Context) {
 	var events []models.Event
-	h.DB.Select("id, title, date, country").Where("active IS NOT NULL").Find(&events)
+	query := h.DB.Select("id, title, date, country")
+	query = query.Preload("Tags")
+	query = query.Where("active IS NOT NULL")
+	result := query.Find(&events)
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to get events"})
+		return
+	}
 
-	var response []models.DataResponse
+	var response []models.MainTableResponse
 	for _, event := range events {
-		response = append(response, models.DataResponse{
+		var tags []string
+		for _, tag := range event.Tags {
+			tags = append(tags, tag.Name)
+		}
+		response = append(response, models.MainTableResponse{
 			ID:      event.ID,
 			Title:   event.Title,
 			Date:    event.Date,
 			Country: event.Country,
+			Tags:    tags,
 		})
 	}
 	c.JSON(200, response)
@@ -32,7 +47,8 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	var event models.Event
-	query := h.DB.Preload("Sources")
+	query := h.DB.Preload("Tags")
+	query = query.Preload("Sources")
 	query = query.Preload("Medias")
 	query = query.Where("id = ?", request.ID)
 	result := query.First(&event)
@@ -43,6 +59,36 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	}
 
 	c.JSON(200, event)
+}
+
+func addTagsToContriubtionEvent(tx *gorm.DB, event *models.Event, tags string) error {
+	tagNames := strings.Split(tags, ", ")
+	var eventTags []models.Tag
+
+	for _, tagName := range tagNames {
+		tagName = strings.TrimSpace(tagName)
+		if tagName == "" {
+			continue
+		}
+
+		var tag models.Tag
+		if err := tx.Where("name = ?", tagName).First(&tag).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				tag = models.Tag{Name: tagName}
+				if err := tx.Create(&tag).Error; err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
+		}
+		eventTags = append(eventTags, tag)
+	}
+	if err := tx.Model(event).Association("Tags").Replace(eventTags); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h *Handler) ContributeEvent(c *gin.Context) {
@@ -60,9 +106,21 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 	}
 	event.Date = parsedDate
 
+	tx := h.DB.Begin()
+
 	if err := h.DB.Create(&event).Error; err != nil {
+		tx.Rollback()
 		c.JSON(500, gin.H{"error": "Failed to create event"})
 		return
+	}
+
+	tags := c.PostForm("tags")
+	if tags != "" {
+		if err := addTagsToContriubtionEvent(tx, &event, tags); err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to add tags"})
+			return
+		}
 	}
 
 	form, _ := c.MultipartForm()
@@ -83,7 +141,11 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 			Name:    names[0],
 			URL:     urls[0],
 		}
-		h.DB.Create(&source)
+		if err := tx.Create(&source).Error; err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to create source"})
+			return
+		}
 	}
 
 	for i := 0; ; i++ {
@@ -120,11 +182,27 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 				media.Caption = captions[0]
 			}
 		}
-
-		h.DB.Create(&media)
+		if err := tx.Create(&media).Error; err != nil {
+			tx.Rollback()
+			c.JSON(500, gin.H{"error": "Failed to create media"})
+			return
+		}
 	}
+
+	tx.Commit()
 
 	notifyAdmin(form.Value["email"][0], &event)
 
 	c.JSON(200, gin.H{"message": "Event contributed successfully"})
+}
+
+func (h *Handler) GetTags(c *gin.Context) {
+	var tags []models.Tag
+	result := h.DB.Order("LOWER(name) ASC").Find(&tags)
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Failed to get tags"})
+		return
+	}
+
+	c.JSON(200, tags)
 }
