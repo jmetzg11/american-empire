@@ -6,7 +6,7 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM golang:1.23-alpine AS go-builder
-WORKDIR /go/src/farmsville
+WORKDIR /go/src/american-empire
 RUN apk add --no-cache gcc musl-dev
 COPY go.mod go.sum ./
 RUN go mod download
@@ -18,7 +18,7 @@ FROM alpine:latest
 WORKDIR /app
 RUN apk add --no-cache sqlite
 
-COPY --from=go-builder /go/src/farmsville/main /app/main
+COPY --from=go-builder /go/src/american-empire/main /app/main
 COPY --from=frontend-builder /app/frontend/build /app/frontend/build
 
 EXPOSE 3000

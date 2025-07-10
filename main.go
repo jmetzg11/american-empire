@@ -1,9 +1,9 @@
 package main
 
 import (
+	"american-empire/backend/database"
+	"american-empire/backend/routes"
 	"fmt"
-	"good-guys/backend/database"
-	"good-guys/backend/routes"
 	"log"
 	"os"
 
@@ -30,6 +30,5 @@ func main() {
 	routes.SetupStaticRoutes(r)
 	routes.SetupAPIRoutes(r)
 
-	// Start the server
 	r.Run(":3000")
 }

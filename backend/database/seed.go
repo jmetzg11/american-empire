@@ -1,7 +1,7 @@
 package database
 
 import (
-	"good-guys/backend/models"
+	"american-empire/backend/models"
 	"log"
 	"time"
 

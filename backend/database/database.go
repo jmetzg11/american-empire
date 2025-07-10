@@ -9,7 +9,7 @@ import (
 
 	"log"
 
-	"good-guys/backend/models"
+	"american-empire/backend/models"
 )
 
 var DB *gorm.DB
@@ -21,7 +21,7 @@ func Connect() error {
 	}
 
 	var err error
-	DB, err = gorm.Open(sqlite.Open("data/good-guys.db"), &gorm.Config{
+	DB, err = gorm.Open(sqlite.Open("data/american-empire.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {

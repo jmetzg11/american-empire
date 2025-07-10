@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"good-guys/backend/api"
-	"good-guys/backend/database"
+	"american-empire/backend/api"
+	"american-empire/backend/database"
 	"os"
 	"strings"
 	"time"
