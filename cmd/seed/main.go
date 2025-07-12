@@ -1,12 +1,27 @@
-package database
+package main
 
 import (
+	"american-empire/backend/database"
 	"american-empire/backend/models"
 	"log"
 	"time"
 
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
+
+func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found")
+	}
+
+	if err := database.Connect(); err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	seedDB(database.DB)
+	log.Println("Seeding completed!")
+}
 
 func seedDB(db *gorm.DB) {
 	var count int64

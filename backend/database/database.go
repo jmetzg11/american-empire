@@ -15,26 +15,25 @@ import (
 var DB *gorm.DB
 
 func Connect() error {
+	var err error
 
-	if err := os.MkdirAll("data", 0755); err != nil {
-		log.Fatal("Failed to create data directory", err)
+	if os.Getenv("GIN_MODE") == "release" {
+		dsn := os.Getenv("DATABASE_URL")
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent)
+		})
+	} else {
+		if err := os.MkdirAll("data", 0755); err != nil {
+			log.Fatal("Failed to create data directory", err)
+		}
+
+		DB, err = gorm.Open(sqlite.Open("data/american-empire.db"), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		})
 	}
 
-	var err error
-	DB, err = gorm.Open(sqlite.Open("data/american-empire.db"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
 	if err != nil {
 		log.Fatal("Failed to connect to database", err)
 	}
-
-	DB.AutoMigrate(
-		&models.Event{},
-		&models.Source{},
-		&models.Media{},
-		&models.Tag{},
-	)
-
-	seedDB(DB)
-	return nil
 }
+
