@@ -24,8 +24,12 @@ func main() {
 
 	database.Connect()
 	fmt.Println("Database connected successfully!")
-	r := gin.Default()
 
+	if err := database.InitSupabase(); err != nil {
+		log.Fatal("Failed to initialize Supabase:", err)
+	}
+
+	r := gin.Default()
 	r.Static("/photos", "./data/photos")
 	routes.SetupStaticRoutes(r)
 	routes.SetupAPIRoutes(r)
