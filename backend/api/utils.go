@@ -14,23 +14,18 @@ import (
 
 func saveUploadedPhoto(c *gin.Context, file *multipart.FileHeader, eventID uint) (string, error) {
 	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), file.Filename)
-	fmt.Printf("Generated filename: %s\n", filename)
 
 	if os.Getenv("GIN_MODE") == "release" {
 		path := fmt.Sprintf("%d/%s", eventID, filename)
-		fmt.Printf("Production path: %s\n", path)
 
 		src, err := file.Open()
 		if err != nil {
-			fmt.Printf("Failed to open file: %v\n", err)
 			return "", err
 		}
 		defer src.Close()
 
-		fmt.Printf("Attempting to upload to Supabase...\n")
 		_, err = database.SupabaseClient.Storage.UploadFile("photos", path, src)
 		if err != nil {
-			fmt.Printf("Supabase upload failed: %v\n", err)
 			return "", err
 		}
 

@@ -219,40 +219,31 @@ func getMediaData(c *gin.Context) (models.Media, error) {
 }
 
 func (h *Handler) UploadPhoto(c *gin.Context) {
-	fmt.Printf("Starting photo upload...\n")
 	file, err := c.FormFile("file")
 	if err != nil {
-		fmt.Printf("Failed to get form file: %v\n", err)
 		log.Println("Failed to get media data", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("Got file: %s, size: %d\n", file.Filename, file.Size)
 
 	media, err := getMediaData(c)
 	if err != nil {
-		fmt.Printf("Failed to get media data: %v\n", err)
 		log.Println("Failed to get media data", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("Got media data, EventID: %d\n", media.EventID)
 
 	media.Type = "photo"
 
 	path, err := saveUploadedPhoto(c, file, media.EventID)
 	if err != nil {
-		fmt.Printf("saveUploadedPhoto failed: %v\n", err)
 		log.Println("Failed to save photo", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("Photo saved at path: %s\n", path)
 
 	media.Path = path
-	fmt.Printf("About to save to database...\n")
 	h.DB.Create(&media)
-	fmt.Printf("Database save completed\n")
 
 	c.JSON(200, gin.H{"message": "Photo uploaded"})
 }
@@ -289,13 +280,11 @@ func (h *Handler) DeleteMedia(c *gin.Context) {
 	}
 
 	if media.Path != "" {
-		if media.Path != "" {
-			if os.Getenv("GIN_MODE") == "release" {
-				database.SupabaseClient.Storage.RemoveFile("photos", []string{media.Path})
-			} else {
-				fullPath := fmt.Sprintf("data/photos/%s", media.Path)
-				os.Remove(fullPath)
-			}
+		if os.Getenv("GIN_MODE") == "release" {
+			database.SupabaseClient.Storage.RemoveFile("photos", []string{media.Path})
+		} else {
+			fullPath := fmt.Sprintf("data/photos/%s", media.Path)
+			os.Remove(fullPath)
 		}
 	}
 

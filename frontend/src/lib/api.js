@@ -245,27 +245,16 @@ export async function unapproveEvent(id) {
 
 export async function uploadPhoto(formData) {
 	try {
-		console.log('About to upload photo...');
-		console.log('FormData entries:');
 		for (let [key, value] of formData.entries()) {
 			console.log(`${key}:`, value);
 		}
 
-		// const url = '/api/admin-test-upload';
 		const url = '/api/admin-upload-photo';
-		console.log('Sending request to:', url);
-
 		const response = await fetch(url, {
 			method: 'POST',
 			body: formData
 		});
-
-		console.log('Response status:', response.status);
-		console.log('Response headers:', [...response.headers.entries()]);
-
 		const data = await response.json();
-		console.log('Response data:', data);
-
 		if (!response.ok) {
 			console.error('Server error:', data.error || data.message);
 		}

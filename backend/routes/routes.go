@@ -3,7 +3,6 @@ package routes
 import (
 	"american-empire/backend/api"
 	"american-empire/backend/database"
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -51,17 +50,6 @@ func SetupAPIRoutes(router *gin.Engine) {
 			adminRoutes.POST("/admin-delete-media", handler.DeleteMedia)
 			adminRoutes.POST("/admin-delete-source", handler.DeleteSources)
 			adminRoutes.POST("/admin-add-source", handler.AddSources)
-			adminRoutes.POST("/admin-test-upload", func(c *gin.Context) {
-				fmt.Printf("Test upload endpoint hit\n")
-				file, err := c.FormFile("file")
-				if err != nil {
-					fmt.Printf("FormFile error: %v\n", err)
-					c.JSON(400, gin.H{"error": err.Error()})
-					return
-				}
-				fmt.Printf("Got file: %s\n", file.Filename)
-				c.JSON(200, gin.H{"message": "Test successful"})
-			})
 		}
 	}
 }
