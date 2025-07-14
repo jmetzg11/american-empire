@@ -12,8 +12,6 @@ import (
 )
 
 func SetupAPIRoutes(router *gin.Engine) {
-	// setupCORS(router)
-
 	handler := &api.Handler{DB: database.DB}
 	store := memory.NewStore()
 
@@ -55,19 +53,3 @@ func SetupAPIRoutes(router *gin.Engine) {
 		}
 	}
 }
-
-// func setupCORS(r *gin.Engine) {
-// 	allowedOrigins := []string{"http://localhost:5173"}
-
-// 	if os.Getenv("GIN_MODE") == "release" {
-// 		allowedOrigins = []string{"https://empire-frontend.fly.dev"}
-// 	}
-
-// 	r.Use(cors.New(cors.Config{
-// 		AllowOrigins:     allowedOrigins,
-// 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-// 		AllowHeaders:     []string{"Content-Type"},
-// 		AllowCredentials: true,
-// 		MaxAge:           12 * time.Hour,
-// 	}))
-// }
