@@ -1,6 +1,5 @@
 export async function getEvents(formData) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/`;
 		const url = '/api/';
 		const response = await fetch(url);
 		const data = await response.json();
@@ -18,7 +17,6 @@ export async function getEvents(formData) {
 
 export async function getEvent(id) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/event`;
 		const url = '/api/event';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -42,7 +40,6 @@ export async function getEvent(id) {
 
 export async function contributeEvent(formData) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/contribute`;
 		const url = '/api/contribute';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -72,7 +69,6 @@ export async function contributeEvent(formData) {
 
 export async function getTags() {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/tags`;
 		const url = '/api/tags';
 		const response = await fetch(url);
 		const data = await response.json();
@@ -93,14 +89,12 @@ export async function getTags() {
 export async function login(username, password) {
 	console.log('Logging in with username:', username, 'and password:', password);
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/login`;
 		const url = '/api/login';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			// credentials: 'include',
 			body: JSON.stringify({ username, password })
 		});
 		console.log(response);
@@ -118,11 +112,8 @@ export async function login(username, password) {
 
 export async function authMe() {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/auth-me`;
 		const url = '/api/auth-me';
-		const response = await fetch(url, {
-			// credentials: 'include'
-		});
+		const response = await fetch(url, {});
 		const data = await response.json();
 
 		if (!response.ok) {
@@ -138,14 +129,12 @@ export async function authMe() {
 
 export async function getAdminEvents() {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-events`;
 		const url = '/api/admin-events';
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}
-			// credentials: 'include'
 		});
 		const data = await response.json();
 
@@ -162,7 +151,6 @@ export async function getAdminEvents() {
 
 export async function editEvent(payload) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-edit-event`;
 		const url = '/api/admin-edit-event';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -170,7 +158,6 @@ export async function editEvent(payload) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(payload)
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -196,7 +183,6 @@ export async function editEvent(payload) {
 
 export async function approveEvent(id) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-approve-event`;
 		const url = '/api/admin-approve-event';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -204,7 +190,6 @@ export async function approveEvent(id) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ id })
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -230,7 +215,6 @@ export async function approveEvent(id) {
 
 export async function unapproveEvent(id) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-unapprove-event`;
 		const url = '/api/admin-unapprove-event';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -238,7 +222,6 @@ export async function unapproveEvent(id) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ id })
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -264,12 +247,10 @@ export async function unapproveEvent(id) {
 
 export async function uploadPhoto(formData) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-upload-photo`;
 		const url = '/api/admin-upload-photo';
 		const response = await fetch(url, {
 			method: 'POST',
 			body: formData
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -295,12 +276,10 @@ export async function uploadPhoto(formData) {
 
 export async function uploadYoutube(formData) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-upload-youtube`;
 		const url = '/api/admin-upload-youtube';
 		const response = await fetch(url, {
 			method: 'POST',
 			body: formData
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -326,7 +305,6 @@ export async function uploadYoutube(formData) {
 
 export async function deleteMedia(id) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-delete-media`;
 		const url = '/api/admin-delete-media';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -334,7 +312,6 @@ export async function deleteMedia(id) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ id })
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -360,7 +337,6 @@ export async function deleteMedia(id) {
 
 export async function deleteSource(id) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-delete-source`;
 		const url = '/api/admin-delete-source';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -368,7 +344,6 @@ export async function deleteSource(id) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ id })
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -394,7 +369,6 @@ export async function deleteSource(id) {
 
 export async function addSource(payload) {
 	try {
-		// const url = `${import.meta.env.VITE_API_URL}/admin-add-source`;
 		const url = '/api/admin-add-source';
 		const response = await fetch(url, {
 			method: 'POST',
@@ -402,7 +376,6 @@ export async function addSource(payload) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(payload)
-			// credentials: 'include'
 		});
 
 		const data = await response.json();
