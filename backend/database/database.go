@@ -46,7 +46,7 @@ func InitSupabase() error {
 	}
 
 	supabaseURL := os.Getenv("SUPABASE_URL")
-	supabaseKey := os.Getenv("SUPABASE_ANON_KEY")
+	supabaseKey := os.Getenv("SUPABASE_SERVICE_ROLE_KEY")
 	var err error
 	SupabaseClient, err = supabase.NewClient(supabaseURL, supabaseKey, nil)
 	return err

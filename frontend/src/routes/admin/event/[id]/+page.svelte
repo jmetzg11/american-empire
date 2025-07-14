@@ -14,9 +14,7 @@
 
 	onMount(async () => {
 		try {
-			console.log('Fetching event with ID:', data.id);
 			event = await getEvent(data.id);
-			console.log('Event fetched:', event);
 		} catch (error) {
 			console.error('Error in onMount:', error);
 		}

@@ -1,10 +1,16 @@
 export async function GET({ params, url, request }) {
 	const backendUrl = `https://empire-backend.fly.dev/api/${params.path}${url.search}`;
 
+	let body = undefined;
+	if (request.method !== 'GET') {
+		// Use arrayBuffer to preserve binary data
+		body = await request.arrayBuffer();
+	}
+
 	const response = await fetch(backendUrl, {
 		method: request.method,
 		headers: request.headers,
-		body: request.method !== 'GET' ? await request.text() : undefined
+		body: body
 	});
 
 	return new Response(response.body, {

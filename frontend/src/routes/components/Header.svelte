@@ -11,7 +11,6 @@
 	let showGuidelinesModal = $state(false);
 
 	function openGuidelinesModal() {
-		console.log('openGuidelinesModal');
 		showGuidelinesModal = true;
 	}
 </script>

@@ -34,9 +34,11 @@
 <h2 class="new-info-modal-title mt-6 text-center">
 	{type === 'photo' ? 'Add Photo' : 'Add Youtube'}
 </h2>
-<label for="photo-title" class="label">Photo Caption</label>
+<label for="photo-title" class="label"
+	>{type === 'photo' ? 'Photo Caption' : 'Youtube Caption'}</label
+>
 <input id="photo-title" type="text" class="input" bind:value={title} />
-<label for="photo-file" class="label">Photo Upload</label>
+<label for="photo-file" class="label">{type === 'photo' ? 'Photo Upload' : 'Youtube URL'}</label>
 {#if type === 'photo'}
 	<input id="photo-file" type="file" class="input" bind:files={file} />
 {:else}
