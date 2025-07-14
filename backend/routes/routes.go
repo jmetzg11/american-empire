@@ -3,11 +3,8 @@ package routes
 import (
 	"american-empire/backend/api"
 	"american-empire/backend/database"
-	"os"
-	"strings"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/ulule/limiter/v3"
 	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
@@ -15,7 +12,7 @@ import (
 )
 
 func SetupAPIRoutes(router *gin.Engine) {
-	setupCORS(router)
+	// setupCORS(router)
 
 	handler := &api.Handler{DB: database.DB}
 	store := memory.NewStore()
@@ -59,32 +56,18 @@ func SetupAPIRoutes(router *gin.Engine) {
 	}
 }
 
-func setupCORS(r *gin.Engine) {
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"}, // Allow local frontend in dev
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Content-Type"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
-}
+// func setupCORS(r *gin.Engine) {
+// 	allowedOrigins := []string{"http://localhost:5173"}
 
-func SetupStaticRoutes(router *gin.Engine) {
-	router.Use(func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/api") {
-			c.Next() // Let API routes handle it
-			return
-		}
+// 	if os.Getenv("GIN_MODE") == "release" {
+// 		allowedOrigins = []string{"https://empire-frontend.fly.dev"}
+// 	}
 
-		// Try to serve static files
-		filePath := "./frontend/build" + c.Request.URL.Path
-		if _, err := os.Stat(filePath); err == nil {
-			c.File(filePath)
-			c.Abort()
-			return
-		}
-		// If not a file, serve index.html (for SvelteKit routing)
-		c.File("./frontend/build/index.html")
-		c.Abort()
-	})
-}
+// 	r.Use(cors.New(cors.Config{
+// 		AllowOrigins:     allowedOrigins,
+// 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+// 		AllowHeaders:     []string{"Content-Type"},
+// 		AllowCredentials: true,
+// 		MaxAge:           12 * time.Hour,
+// 	}))
+// }

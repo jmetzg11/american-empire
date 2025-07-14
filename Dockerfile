@@ -1,10 +1,3 @@
-FROM node:alpine AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ ./
-RUN npm run build
-
 FROM golang:1.23-alpine AS go-builder
 WORKDIR /go/src/american-empire
 RUN apk add --no-cache gcc musl-dev
@@ -20,8 +13,7 @@ WORKDIR /app
 RUN apk add --no-cache ca-certificates
 
 COPY --from=go-builder /go/src/american-empire/main /app/main
-COPY --from=frontend-builder /app/frontend/build /app/frontend/build
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["/app/main"]

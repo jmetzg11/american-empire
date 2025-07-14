@@ -1,9 +1,11 @@
 package api
 
 import (
+	"american-empire/backend/database"
 	"american-empire/backend/models"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -65,6 +67,7 @@ func updateEventTags(tx *gorm.DB, event *models.Event, tagsStr string) error {
 func (h *Handler) EditEvent(c *gin.Context) {
 	var payload map[string]interface{}
 	if err := c.ShouldBindJSON(&payload); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": "Invalid JSON"})
 		return
 	}
@@ -80,6 +83,7 @@ func (h *Handler) EditEvent(c *gin.Context) {
 	query = query.Preload("Medias")
 	result := query.First(&event, eventID)
 	if result.Error != nil {
+		log.Println("Failed to get event", result.Error)
 		c.JSON(404, gin.H{"error": "Event not found"})
 		return
 	}
@@ -103,6 +107,7 @@ func (h *Handler) EditEvent(c *gin.Context) {
 
 	if err := tx.Save(&event).Error; err != nil {
 		tx.Rollback()
+		log.Println("Failed to update event", err)
 		c.JSON(500, gin.H{"error": "Failed to update event"})
 		return
 	}
@@ -110,6 +115,7 @@ func (h *Handler) EditEvent(c *gin.Context) {
 	if tags, ok := payload["Tags"].(string); ok {
 		if err := updateEventTags(tx, &event, tags); err != nil {
 			tx.Rollback()
+			log.Println("Failed to update event tags", err)
 			c.JSON(500, gin.H{"error": "Failed to update event tags"})
 			return
 		}
@@ -152,6 +158,7 @@ func (h *Handler) EditEvent(c *gin.Context) {
 func (h *Handler) ApproveEvent(c *gin.Context) {
 	var request models.EventRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": "Invalid JSON"})
 		return
 	}
@@ -160,11 +167,13 @@ func (h *Handler) ApproveEvent(c *gin.Context) {
 	result := h.DB.Model(&models.Event{}).Where("id = ?", request.ID).Update("active", &now)
 
 	if result.Error != nil {
+		log.Println("Failed to approve event", result.Error)
 		c.JSON(500, gin.H{"error": "Failed to approve event"})
 		return
 	}
 
 	if result.RowsAffected == 0 {
+		log.Println("Event not found")
 		c.JSON(404, gin.H{"error": "Event not found"})
 		return
 	}
@@ -175,6 +184,7 @@ func (h *Handler) ApproveEvent(c *gin.Context) {
 func (h *Handler) UnapproveEvent(c *gin.Context) {
 	var request models.EventRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": "Invalid JSON"})
 		return
 	}
@@ -182,11 +192,13 @@ func (h *Handler) UnapproveEvent(c *gin.Context) {
 	result := h.DB.Model(&models.Event{}).Where("id = ?", request.ID).Update("active", nil)
 
 	if result.Error != nil {
+		log.Println("Failed to unapprove event", result.Error)
 		c.JSON(500, gin.H{"error": "Failed to unapprove event"})
 		return
 	}
 
 	if result.RowsAffected == 0 {
+		log.Println("Event not found")
 		c.JSON(404, gin.H{"error": "Event not found"})
 		return
 	}
@@ -209,12 +221,14 @@ func getMediaData(c *gin.Context) (models.Media, error) {
 func (h *Handler) UploadPhoto(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
+		log.Println("Failed to get media data", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	media, err := getMediaData(c)
 	if err != nil {
+		log.Println("Failed to get media data", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -223,6 +237,7 @@ func (h *Handler) UploadPhoto(c *gin.Context) {
 
 	path, err := saveUploadedPhoto(c, file, media.EventID)
 	if err != nil {
+		log.Println("Failed to save photo", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -236,6 +251,7 @@ func (h *Handler) UploadPhoto(c *gin.Context) {
 func (h *Handler) UploadYoutube(c *gin.Context) {
 	media, err := getMediaData(c)
 	if err != nil {
+		log.Println("Failed to get media data", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 	}
 
@@ -249,6 +265,7 @@ func (h *Handler) UploadYoutube(c *gin.Context) {
 func (h *Handler) DeleteMedia(c *gin.Context) {
 	var request models.MediaDeleteRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -257,13 +274,20 @@ func (h *Handler) DeleteMedia(c *gin.Context) {
 	result := h.DB.Where("id = ?", request.ID).First(&media)
 
 	if result.Error != nil {
+		log.Println("Failed to get media", result.Error)
 		c.JSON(404, gin.H{"error": "Media not found"})
 		return
 	}
 
 	if media.Path != "" {
-		fullPath := fmt.Sprintf("data/photos/%s", media.Path)
-		os.Remove(fullPath)
+		if media.Path != "" {
+			if os.Getenv("GIN_MODE") == "release" {
+				database.SupabaseClient.Storage.RemoveFile("photos", []string{media.Path})
+			} else {
+				fullPath := fmt.Sprintf("data/photos/%s", media.Path)
+				os.Remove(fullPath)
+			}
+		}
 	}
 
 	h.DB.Delete(&media)
@@ -273,6 +297,7 @@ func (h *Handler) DeleteMedia(c *gin.Context) {
 func (h *Handler) DeleteSources(c *gin.Context) {
 	var request models.SourceDeleteRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -281,6 +306,7 @@ func (h *Handler) DeleteSources(c *gin.Context) {
 	result := h.DB.Where("id = ?", request.ID).First(&source)
 
 	if result.Error != nil {
+		log.Println("Failed to get source", result.Error)
 		c.JSON(404, gin.H{"error": "Source not found"})
 		return
 	}
@@ -292,12 +318,14 @@ func (h *Handler) DeleteSources(c *gin.Context) {
 func (h *Handler) AddSources(c *gin.Context) {
 	var request models.SourceAddRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	eventID, err := strconv.ParseUint(request.EventID, 10, 32)
 	if err != nil {
+		log.Println("Failed to parse event ID", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -309,6 +337,7 @@ func (h *Handler) AddSources(c *gin.Context) {
 	}
 
 	if err := h.DB.Create(&source).Error; err != nil {
+		log.Println("Failed to create source", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}

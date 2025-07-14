@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found. Using environment variables.")
+
 	}
 
 	plainPassword := os.Getenv("ADMIN_PASSWORD")
@@ -30,9 +30,10 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Static("/photos", "./data/photos")
-	routes.SetupStaticRoutes(r)
+	if os.Getenv("GIN_MODE") != "release" {
+		r.Static("/photos", "./data/photos")
+	}
 	routes.SetupAPIRoutes(r)
 
-	r.Run(":3000")
+	r.Run(":8080")
 }

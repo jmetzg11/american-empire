@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/joho/godotenv v1.5.1
+	github.com/supabase-community/supabase-go v0.0.4
 	github.com/ulule/limiter/v3 v3.11.2
 	golang.org/x/crypto v0.39.0
 	gorm.io/driver/postgres v1.6.0
@@ -45,7 +46,6 @@ require (
 	github.com/supabase-community/gotrue-go v1.2.0 // indirect
 	github.com/supabase-community/postgrest-go v0.0.11 // indirect
 	github.com/supabase-community/storage-go v0.7.0 // indirect
-	github.com/supabase-community/supabase-go v0.0.4 // indirect
 	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

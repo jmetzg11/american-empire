@@ -4,6 +4,7 @@ import (
 	"american-empire/backend/models"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -18,6 +19,7 @@ func (h *Handler) GetEvents(c *gin.Context) {
 	query = query.Where("active IS NOT NULL")
 	result := query.Find(&events)
 	if result.Error != nil {
+		log.Println("Failed to get events", result.Error)
 		c.JSON(500, gin.H{"error": "Failed to get events"})
 		return
 	}
@@ -36,12 +38,14 @@ func (h *Handler) GetEvents(c *gin.Context) {
 			Tags:    tags,
 		})
 	}
+
 	c.JSON(200, response)
 }
 
 func (h *Handler) GetEvent(c *gin.Context) {
 	var request models.EventRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to get event", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -54,7 +58,7 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	result := query.First(&event)
 
 	if result.Error != nil {
-		fmt.Println(result.Error)
+		log.Println("Failed to get event", result.Error)
 		c.JSON(404, gin.H{"error": "Event not found"})
 	}
 
@@ -101,6 +105,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 	dateStr := c.PostForm("date")
 	parsedDate, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
+		log.Println("Failed to parse date", err)
 		c.JSON(400, gin.H{"error": "Invalid date format"})
 		return
 	}
@@ -110,6 +115,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 
 	if err := h.DB.Create(&event).Error; err != nil {
 		tx.Rollback()
+		log.Println("Failed to create event", err)
 		c.JSON(500, gin.H{"error": "Failed to create event"})
 		return
 	}
@@ -118,6 +124,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 	if tags != "" {
 		if err := addTagsToContriubtionEvent(tx, &event, tags); err != nil {
 			tx.Rollback()
+			log.Println("Failed to add tags", err)
 			c.JSON(500, gin.H{"error": "Failed to add tags"})
 			return
 		}
@@ -143,6 +150,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 		}
 		if err := tx.Create(&source).Error; err != nil {
 			tx.Rollback()
+			log.Println("Failed to create source", err)
 			c.JSON(500, gin.H{"error": "Failed to create source"})
 			return
 		}
@@ -166,6 +174,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 			if len(files) > 0 {
 				path, err := saveUploadedPhoto(c, files[0], event.ID)
 				if err != nil {
+					log.Println("Failed to save photo", err)
 					c.JSON(500, gin.H{"error": "Failed to save photo"})
 					return
 				}
@@ -184,6 +193,7 @@ func (h *Handler) ContributeEvent(c *gin.Context) {
 		}
 		if err := tx.Create(&media).Error; err != nil {
 			tx.Rollback()
+			log.Println("Failed to create media", err)
 			c.JSON(500, gin.H{"error": "Failed to create media"})
 			return
 		}
@@ -200,6 +210,7 @@ func (h *Handler) GetTags(c *gin.Context) {
 	var tags []models.Tag
 	result := h.DB.Order("LOWER(name) ASC").Find(&tags)
 	if result.Error != nil {
+		log.Println("Failed to get tags", result.Error)
 		c.JSON(500, gin.H{"error": "Failed to get tags"})
 		return
 	}

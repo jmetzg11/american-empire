@@ -1,22 +1,16 @@
 <script>
+	import { login } from '$lib/api';
 	import { fetchAdminEvents } from '$lib/store';
 	let { isAuthenticated = $bindable() } = $props();
 	let username = $state('');
 	let password = $state('');
 
 	const handleLogin = async () => {
-		const url = `${import.meta.env.VITE_API_URL}/login`;
-		const response = await fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			credentials: 'include',
-			body: JSON.stringify({ username, password })
-		});
-		if (response.ok) {
+		if (await login(username, password)) {
 			isAuthenticated = true;
 			await fetchAdminEvents();
+		} else {
+			console.error('Login failed');
 		}
 	};
 </script>

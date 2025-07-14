@@ -13,7 +13,13 @@
 	let alreadyApproved = $derived(event?.Active !== null);
 
 	onMount(async () => {
-		event = await getEvent(data.id);
+		try {
+			console.log('Fetching event with ID:', data.id);
+			event = await getEvent(data.id);
+			console.log('Event fetched:', event);
+		} catch (error) {
+			console.error('Error in onMount:', error);
+		}
 	});
 
 	async function refreshEvent() {

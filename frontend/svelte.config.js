@@ -1,21 +1,11 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node'; // or adapter-auto
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-/** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte'],
 	preprocess: [vitePreprocess()],
-
 	kit: {
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: 'index.html', // Important for SPA routing
-			precompress: false
-		}),
+		adapter: adapter(),
 		csrf: { checkOrigin: false }
 	}
 };

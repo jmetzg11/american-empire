@@ -1,8 +1,15 @@
 export async function getEvents(formData) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/`;
+		// const url = `${import.meta.env.VITE_API_URL}/`;
+		const url = '/api/';
 		const response = await fetch(url);
-		return await response.json();
+		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
+		return data;
 	} catch (error) {
 		console.error('Error posting blog', error);
 		return false;
@@ -11,7 +18,8 @@ export async function getEvents(formData) {
 
 export async function getEvent(id) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/event`;
+		// const url = `${import.meta.env.VITE_API_URL}/event`;
+		const url = '/api/event';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -19,7 +27,13 @@ export async function getEvent(id) {
 			},
 			body: JSON.stringify({ id })
 		});
-		return await response.json();
+		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
+		return data;
 	} catch (error) {
 		console.error('Error fetching event', error);
 		return false;
@@ -28,13 +42,18 @@ export async function getEvent(id) {
 
 export async function contributeEvent(formData) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/contribute`;
+		// const url = `${import.meta.env.VITE_API_URL}/contribute`;
+		const url = '/api/contribute';
 		const response = await fetch(url, {
 			method: 'POST',
 			body: formData
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
 
 		return {
 			ok: response.ok,
@@ -53,9 +72,16 @@ export async function contributeEvent(formData) {
 
 export async function getTags() {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/tags`;
+		// const url = `${import.meta.env.VITE_API_URL}/tags`;
+		const url = '/api/tags';
 		const response = await fetch(url);
-		return await response.json();
+		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
+		return data;
 	} catch (error) {
 		console.error('Error fetching tags', error);
 		return false;
@@ -64,13 +90,45 @@ export async function getTags() {
 
 // Admin
 
+export async function login(username, password) {
+	console.log('Logging in with username:', username, 'and password:', password);
+	try {
+		// const url = `${import.meta.env.VITE_API_URL}/login`;
+		const url = '/api/login';
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			// credentials: 'include',
+			body: JSON.stringify({ username, password })
+		});
+		console.log(response);
+
+		if (!response.ok) {
+			const data = await response.json();
+			console.error('Server error:', data.message);
+		}
+		return response.ok;
+	} catch (error) {
+		console.error('Error logging in', error);
+		return false;
+	}
+}
+
 export async function authMe() {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/auth-me`;
+		// const url = `${import.meta.env.VITE_API_URL}/auth-me`;
+		const url = '/api/auth-me';
 		const response = await fetch(url, {
-			credentials: 'include'
+			// credentials: 'include'
 		});
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return data.authenticated;
 	} catch (error) {
 		console.error('Error fetching auth me', error);
@@ -80,15 +138,22 @@ export async function authMe() {
 
 export async function getAdminEvents() {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-events`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-events`;
+		const url = '/api/admin-events';
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
-			},
-			credentials: 'include'
+			}
+			// credentials: 'include'
 		});
-		return await response.json();
+		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
+		return data;
 	} catch (error) {
 		console.error('Error posting blog', error);
 		return false;
@@ -97,14 +162,15 @@ export async function getAdminEvents() {
 
 export async function editEvent(payload) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-edit-event`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-edit-event`;
+		const url = '/api/admin-edit-event';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(payload),
-			credentials: 'include'
+			body: JSON.stringify(payload)
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
@@ -130,17 +196,23 @@ export async function editEvent(payload) {
 
 export async function approveEvent(id) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-approve-event`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-approve-event`;
+		const url = '/api/admin-approve-event';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id }),
-			credentials: 'include'
+			body: JSON.stringify({ id })
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -158,17 +230,23 @@ export async function approveEvent(id) {
 
 export async function unapproveEvent(id) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-unapprove-event`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-unapprove-event`;
+		const url = '/api/admin-unapprove-event';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id }),
-			credentials: 'include'
+			body: JSON.stringify({ id })
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -186,14 +264,20 @@ export async function unapproveEvent(id) {
 
 export async function uploadPhoto(formData) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-upload-photo`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-upload-photo`;
+		const url = '/api/admin-upload-photo';
 		const response = await fetch(url, {
 			method: 'POST',
-			body: formData,
-			credentials: 'include'
+			body: formData
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -211,14 +295,20 @@ export async function uploadPhoto(formData) {
 
 export async function uploadYoutube(formData) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-upload-youtube`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-upload-youtube`;
+		const url = '/api/admin-upload-youtube';
 		const response = await fetch(url, {
 			method: 'POST',
-			body: formData,
-			credentials: 'include'
+			body: formData
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -236,17 +326,23 @@ export async function uploadYoutube(formData) {
 
 export async function deleteMedia(id) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-delete-media`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-delete-media`;
+		const url = '/api/admin-delete-media';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id }),
-			credentials: 'include'
+			body: JSON.stringify({ id })
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -264,17 +360,23 @@ export async function deleteMedia(id) {
 
 export async function deleteSource(id) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-delete-source`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-delete-source`;
+		const url = '/api/admin-delete-source';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id }),
-			credentials: 'include'
+			body: JSON.stringify({ id })
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -292,17 +394,23 @@ export async function deleteSource(id) {
 
 export async function addSource(payload) {
 	try {
-		const url = `${import.meta.env.VITE_API_URL}/admin-add-source`;
+		// const url = `${import.meta.env.VITE_API_URL}/admin-add-source`;
+		const url = '/api/admin-add-source';
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(payload),
-			credentials: 'include'
+			body: JSON.stringify(payload)
+			// credentials: 'include'
 		});
 
 		const data = await response.json();
+
+		if (!response.ok) {
+			console.error('Server error:', data.error || data.message);
+		}
+
 		return {
 			ok: response.ok,
 			status: response.status,

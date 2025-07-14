@@ -3,6 +3,7 @@ package api
 import (
 	"american-empire/backend/models"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -13,7 +14,7 @@ import (
 )
 
 func (h *Handler) AuthMe(c *gin.Context) {
-	tokenString, err := c.Cookie("good_guys_auth_token")
+	tokenString, err := c.Cookie("american_empire_auth_token")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"authenticated": false})
 		return
@@ -46,6 +47,7 @@ func (h *Handler) AuthMe(c *gin.Context) {
 func (h *Handler) Login(c *gin.Context) {
 	var request models.LoginRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind JSON", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -54,6 +56,7 @@ func (h *Handler) Login(c *gin.Context) {
 	envPassword := os.Getenv("ADMIN_PASSWORD_HASHED")
 
 	if request.Username != envUsername || bcrypt.CompareHashAndPassword([]byte(envPassword), []byte(request.Password)) != nil {
+		log.Println("Invalid credentials")
 		c.JSON(401, gin.H{"error": "Invalid credentials"})
 		return
 	}
@@ -66,14 +69,17 @@ func (h *Handler) Login(c *gin.Context) {
 	}
 
 	isProduction := os.Getenv("GIN_MODE") == "release"
+	if isProduction {
+		c.SetSameSite(http.SameSiteNoneMode)
+	}
 
 	maxAge := 90 * 24 * 60 * 60
 	c.SetCookie(
-		"good_guys_auth_token",
+		"american_empire_auth_token",
 		token,
 		maxAge,
 		"/",
-		"",
+		"", // Try empty domain first
 		isProduction,
 		true,
 	)

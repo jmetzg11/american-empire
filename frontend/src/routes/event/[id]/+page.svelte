@@ -9,7 +9,13 @@
 	let event = $state(null);
 
 	onMount(async () => {
-		event = await getEvent(data.id);
+		try {
+			console.log('Fetching event with ID:', data.id);
+			event = await getEvent(data.id);
+			console.log('Event fetched:', event);
+		} catch (error) {
+			console.error('Error in onMount:', error);
+		}
 	});
 </script>
 
