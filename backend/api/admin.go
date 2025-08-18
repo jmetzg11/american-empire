@@ -1,8 +1,6 @@
 package api
 
 import (
-	"american-empire/backend/database"
-	"american-empire/backend/models"
 	"errors"
 	"fmt"
 	"log"
@@ -10,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"american-empire/backend/database"
+	"american-empire/backend/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -341,4 +342,75 @@ func (h *Handler) AddSources(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Source added"})
+}
+
+func (h *Handler) AddBook(c *gin.Context) {
+	var request models.NewBookRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind Json", err)
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	tx := h.DB.Begin()
+
+	book := models.Book{
+		Title:  request.Title,
+		Author: request.Author,
+		Link:   request.Link,
+	}
+	if err := tx.Create(&book).Error; err != nil {
+		tx.Rollback()
+		log.Println("Failed to create book", err)
+		c.JSON(500, gin.H{"error": "Failed to create book"})
+		return
+	}
+
+	if request.Events != "" {
+		eventIDStrs := strings.Split(request.Events, ", ")
+		var events []models.Event
+		for _, eventIDStr := range eventIDStrs {
+			eventIDStr = strings.TrimSpace(eventIDStr)
+			if eventIDStr == "" {
+				continue
+			}
+			eventID, err := strconv.ParseUint(eventIDStr, 10, 32)
+			if err != nil {
+				continue
+			}
+			var event models.Event
+			if err := tx.Where("id = ?", eventID).First(&event).Error; err == nil {
+				events = append(events, event)
+			}
+		}
+		if len(events) > 0 {
+			if err := tx.Model(&book).Association("Events").Append(events); err != nil {
+				tx.Rollback()
+				log.Println("Failed to associate events", err)
+				c.JSON(500, gin.H{"error": "Failed to associate events"})
+				return
+			}
+		}
+	}
+
+	if len(request.SelectedTags) > 0 {
+		var tags []models.Tag
+		for _, tagID := range request.SelectedTags {
+			var tag models.Tag
+			if err := tx.Where("id = ?", tagID).First(&tag).Error; err == nil {
+				tags = append(tags, tag)
+			}
+		}
+		if len(tags) > 0 {
+			if err := tx.Model(&book).Association("Tags").Append(tags); err != nil {
+				tx.Rollback()
+				log.Println("Failed to associate tags", err)
+				c.JSON(500, gin.H{"error": "Failed to associate tags"})
+				return
+			}
+		}
+	}
+
+	tx.Commit()
+	c.JSON(200, gin.H{"message": "Book added successfully"})
 }

@@ -10,6 +10,8 @@ Explore techniques used by the United States to assert its global dominace.
 ### Development Setup
   ```bash
   # Backend with hot reload
+  go run cmd/migrate/main.go 
+  go run cmd/seed/main.go
   air
 
   # Frontend (new terminal)

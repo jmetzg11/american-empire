@@ -16,6 +16,7 @@ type Event struct {
 	Sources []Source `gorm:"foreignKey:EventID;"`
 	Medias  []Media  `gorm:"foreignKey:EventID"`
 	Tags    []Tag    `gorm:"many2many:event_tags;"`
+	Books []Book `gorm:"many2many:book_events;"`
 }
 
 type Source struct {
@@ -38,4 +39,14 @@ type Tag struct {
 	ID     uint    `gorm:"primaryKey"`
 	Name   string  `gorm:"not null;unique"`
 	Events []Event `gorm:"many2many:event_tags;"`
+}
+
+type Book struct {
+	ID     uint   `gorm:"primaryKey"`
+	Title  string `gorm:"not null"`
+	Author string `gorm:"not null"`
+	Link   string `gorm:"not null"`
+
+	Events []Event `gorm:"many2many:book_events;"`
+	Tags   []Tag   `gorm:"many2many:book_tags;"`
 }

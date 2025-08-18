@@ -66,6 +66,10 @@
 	@apply cursor-pointer rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800;
 }
 
+.tag-selected{
+    @apply cursor-pointer rounded-full bg-blue-600 px-2 py-1 text-xs font-medium text-white;
+}
+
 /* Forms */
 
 .label {

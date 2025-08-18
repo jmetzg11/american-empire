@@ -22,3 +22,12 @@ type SourceAddRequest struct {
 	Name    string `json:"Name" binding:"required"`
 	URL     string `json:"URL" binding:"required"`
 }
+
+
+type NewBookRequest struct {
+	Title string `json:"title" binding:"required"`
+	Author string `json:"author" binding:"required"`
+	Link string `json:"link" binding:"required"`
+	Events string `json:"events" binding:"required"`
+	SelectedTags []uint `json:"selectedTags" binding:"required"`
+}

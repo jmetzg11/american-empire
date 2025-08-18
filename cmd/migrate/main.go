@@ -53,6 +53,7 @@ func main() {
 		&models.Source{},
 		&models.Media{},
 		&models.Tag{},
+		&models.Book{},
 	)
 
 	log.Printf("Migration completed successfully for %s environment!", env)

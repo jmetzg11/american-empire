@@ -4,13 +4,14 @@
 	import Text from './components/Text.svelte';
 	import MediaCarousel from './components/MediaCarousel.svelte';
 	import Sources from './components/Sources.svelte';
-
+	import Books from './components/Books.svelte';
 	let { data } = $props();
 	let event = $state(null);
 
 	onMount(async () => {
 		try {
 			event = await getEvent(data.id);
+			console.log(event);
 		} catch (error) {
 			console.error('Error in onMount:', error);
 		}
@@ -23,7 +24,11 @@
 		{#if event.Medias.length > 0}
 			<MediaCarousel media={event.Medias} />
 		{/if}
+
 		<Sources sources={event.Sources} />
+		{#if event.Books.length > 0}
+			<Books books={event.Books} />
+		{/if}
 	{:else}
 		<div>Loading...</div>
 	{/if}

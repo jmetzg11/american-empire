@@ -54,12 +54,15 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	query := h.DB.Preload("Tags")
 	query = query.Preload("Sources")
 	query = query.Preload("Medias")
+	query = query.Preload("Books")
 	query = query.Where("id = ?", request.ID)
 	result := query.First(&event)
+	fmt.Println(result)
 
 	if result.Error != nil {
 		log.Println("Failed to get event", result.Error)
 		c.JSON(404, gin.H{"error": "Event not found"})
+		return
 	}
 
 	c.JSON(200, event)

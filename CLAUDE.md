@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Backend (Go)
-- `make run` - Start the Go backend server on port 8080
+- `air` - Start the Go backend server with hot reload on port 8080 (development)
+- `make run` - Start the Go backend server on port 8080 (production)
 - `make test` - Run Go tests
 - `make clean` - Clean build artifacts and recreate tmp directory
 - `make clean-db` - Remove local SQLite database file

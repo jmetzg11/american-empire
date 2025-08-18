@@ -398,3 +398,31 @@ export async function addSource(payload) {
 		};
 	}
 }
+
+export async function submitNewBook(payload) {
+    try {
+        const url = '/api/admin-add-book';
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+
+        if (!response.ok) {
+            console.error("Server error:", data.error || data.message)
+        }
+
+        return {
+            ok: response.ok,
+            status: response.status
+        }
+    } catch (error) {
+        console.error('Error addming souce', error)
+        return {
+            ok: false, 
+            status: 500, 
+        }
+    }
+}

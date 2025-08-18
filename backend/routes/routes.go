@@ -1,9 +1,10 @@
 package routes
 
 import (
+	"time"
+
 	"american-empire/backend/api"
 	"american-empire/backend/database"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ulule/limiter/v3"
@@ -50,6 +51,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 			adminRoutes.POST("/admin-delete-media", handler.DeleteMedia)
 			adminRoutes.POST("/admin-delete-source", handler.DeleteSources)
 			adminRoutes.POST("/admin-add-source", handler.AddSources)
+			adminRoutes.POST("/admin-add-book", handler.AddBook)
 		}
 	}
 }
