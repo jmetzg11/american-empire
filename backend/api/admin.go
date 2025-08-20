@@ -344,6 +344,47 @@ func (h *Handler) AddSources(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Source added"})
 }
 
+func (h *Handler) GetBooks(c *gin.Context) {
+	var books []models.Book
+	h.DB.Preload("Tags", func(db *gorm.DB) *gorm.DB {
+		return db.Select("name")
+	}).Preload("Events", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id")
+	}).Find(&books)
+
+	type BookResponse struct {
+		ID     uint     `json:"id"`
+		Title  string   `json:"title"`
+		Author string   `json:"author"`
+		Tags   []string `json:"tags"`
+		Events []uint   `json:"events"`
+	}
+
+	var response []BookResponse
+	for _, book := range books {
+		var tagNames []string
+		for _, tag := range book.Tags {
+			tagNames = append(tagNames, tag.Name)
+		}
+
+		var eventIDs []uint
+		for _, event := range book.Events {
+			eventIDs = append(eventIDs, event.ID)
+		}
+
+		response = append(response, BookResponse{
+			ID:     book.ID,
+			Title:  book.Title,
+			Author: book.Author,
+			Tags:   tagNames,
+			Events: eventIDs,
+		})
+	}
+
+	fmt.Println(response)
+	c.JSON(200, response)
+}
+
 func (h *Handler) AddBook(c *gin.Context) {
 	var request models.NewBookRequest
 	if err := c.ShouldBindJSON(&request); err != nil {

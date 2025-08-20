@@ -51,6 +51,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 			adminRoutes.POST("/admin-delete-media", handler.DeleteMedia)
 			adminRoutes.POST("/admin-delete-source", handler.DeleteSources)
 			adminRoutes.POST("/admin-add-source", handler.AddSources)
+			adminRoutes.GET("/admin-get-books", handler.GetBooks)
 			adminRoutes.POST("/admin-add-book", handler.AddBook)
 		}
 	}

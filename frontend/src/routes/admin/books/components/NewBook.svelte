@@ -13,7 +13,6 @@
 	onMount(async () => {
 		try {
 			tags = await getTags();
-			console.log(tags);
 		} catch (error) {
 			console.error('Error in onMount:', error);
 		}
@@ -43,10 +42,26 @@
 	<div class="card-style">
 		<h2 class="section-title">New Book</h2>
 		<div class="flex-col-gap-2">
-			<input type="text" class="input" placeholder="Title" bind:value={newBook.title} />
-			<input type="text" class="input" placeholder="Author" bind:value={newBook.author} />
-			<input type="text" class="input" placeholder="URL" bind:value={newBook.link} />
-			<input type="text" class="input" placeholder="1, 2, 3" bind:value={newBook.events} />
+			<label for="title" class="label">Title</label>
+			<input type="text" id="title" class="input" placeholder="Title" bind:value={newBook.title} />
+			<label for="author" class="label">Author</label>
+			<input
+				type="text"
+				id="author"
+				class="input"
+				placeholder="Author"
+				bind:value={newBook.author}
+			/>
+			<label for="url" class="label">URL</label>
+			<input type="text" id="url" class="input" placeholder="URL" bind:value={newBook.link} />
+			<label for="event-ids" class="label">Event IDs</label>
+			<input
+				type="text"
+				id="event-ids"
+				class="input"
+				placeholder="1, 2, 3"
+				bind:value={newBook.events}
+			/>
 		</div>
 		{#each tags as tag}
 			<span
@@ -59,6 +74,6 @@
 				{tag.Name}
 			</span>
 		{/each}
+		<button class="btn" onclick={handleSubmit}>Submit</button>
 	</div>
-	<button class="btn" onclick={handleSubmit}>Submit</button>
 </div>

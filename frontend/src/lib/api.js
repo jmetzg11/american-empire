@@ -399,6 +399,22 @@ export async function addSource(payload) {
 	}
 }
 
+export async function getBooks() {
+    try {
+        const url = '/api/admin-get-books'
+        const response = await fetch(url)
+        const data = await response.json()
+
+        if (!response.ok) {
+            console.error('Server error:', data.error || data.message)
+        }
+        return data 
+    } catch (error) {
+        console.error('Error fetching books', error)
+        return false
+    }
+}
+
 export async function submitNewBook(payload) {
     try {
         const url = '/api/admin-add-book';
