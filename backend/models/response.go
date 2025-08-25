@@ -9,3 +9,12 @@ type MainTableResponse struct {
 	Country string    `json:"country"`
 	Tags    []string  `json:"tags"`
 }
+
+
+type BookResponse struct {
+	ID     uint     `json:"id"`
+	Title  string   `json:"title"`
+	Author string   `json:"author"`
+	Tags   []string `json:"tags"`
+	Events []uint   `json:"events"`
+}

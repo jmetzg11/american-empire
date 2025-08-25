@@ -1,12 +1,13 @@
 package api
 
 import (
-	"american-empire/backend/models"
 	"errors"
 	"fmt"
 	"log"
 	"strings"
 	"time"
+
+	"american-empire/backend/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -57,7 +58,6 @@ func (h *Handler) GetEvent(c *gin.Context) {
 	query = query.Preload("Books")
 	query = query.Where("id = ?", request.ID)
 	result := query.First(&event)
-	fmt.Println(result)
 
 	if result.Error != nil {
 		log.Println("Failed to get event", result.Error)
@@ -219,4 +219,23 @@ func (h *Handler) GetTags(c *gin.Context) {
 	}
 
 	c.JSON(200, tags)
+}
+
+func (h *Handler) GetBook(c *gin.Context) {
+	bookID := c.Param("id")
+
+	var book models.Book
+	result := h.DB.Preload("Tags", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name")
+	}).Preload("Events", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, title")
+	}).Where("id = ?", bookID).First(&book)
+
+	if result.Error != nil {
+		log.Println("Failed to get book", result.Error)
+		c.JSON(404, gin.H{"error": "Book not found"})
+		return
+	}
+
+	c.JSON(200, book)
 }

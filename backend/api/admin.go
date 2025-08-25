@@ -347,20 +347,13 @@ func (h *Handler) AddSources(c *gin.Context) {
 func (h *Handler) GetBooks(c *gin.Context) {
 	var books []models.Book
 	h.DB.Preload("Tags", func(db *gorm.DB) *gorm.DB {
-		return db.Select("name")
+		return db.Select("id, name")
 	}).Preload("Events", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id")
 	}).Find(&books)
 
-	type BookResponse struct {
-		ID     uint     `json:"id"`
-		Title  string   `json:"title"`
-		Author string   `json:"author"`
-		Tags   []string `json:"tags"`
-		Events []uint   `json:"events"`
-	}
 
-	var response []BookResponse
+	var response []models.BookResponse
 	for _, book := range books {
 		var tagNames []string
 		for _, tag := range book.Tags {
@@ -372,7 +365,7 @@ func (h *Handler) GetBooks(c *gin.Context) {
 			eventIDs = append(eventIDs, event.ID)
 		}
 
-		response = append(response, BookResponse{
+		response = append(response, models.BookResponse{
 			ID:     book.ID,
 			Title:  book.Title,
 			Author: book.Author,
@@ -381,7 +374,6 @@ func (h *Handler) GetBooks(c *gin.Context) {
 		})
 	}
 
-	fmt.Println(response)
 	c.JSON(200, response)
 }
 
@@ -392,7 +384,6 @@ func (h *Handler) AddBook(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-
 	tx := h.DB.Begin()
 
 	book := models.Book{
@@ -454,4 +445,100 @@ func (h *Handler) AddBook(c *gin.Context) {
 
 	tx.Commit()
 	c.JSON(200, gin.H{"message": "Book added successfully"})
+}
+
+func (h *Handler) EditBook(c *gin.Context) {
+	var request models.EditBookRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Println("Failed to bind Json", err)
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	bookID := request.ID
+	if bookID == 0 {
+		c.JSON(400, gin.H{"error": "Book ID is required"})
+		return
+	}
+
+	tx := h.DB.Begin()
+
+	var book models.Book
+	if err := tx.First(&book, bookID).Error; err != nil {
+		tx.Rollback()
+		log.Println("Failed to find book", err)
+		c.JSON(404, gin.H{"error": "Book not found"})
+		return
+	}
+
+	book.Title = request.Title
+	book.Author = request.Author
+	book.Link = request.Link
+
+	if err := tx.Save(&book).Error; err != nil {
+		tx.Rollback()
+		log.Println("Failed to update book", err)
+		c.JSON(500, gin.H{"error": "Failed to update book"})
+		return
+	}
+
+	if request.Events != "" {
+		eventIDStrs := strings.Split(request.Events, ", ")
+		var events []models.Event
+		for _, eventIDStr := range eventIDStrs {
+			eventIDStr = strings.TrimSpace(eventIDStr)
+			if eventIDStr == "" {
+				continue
+			}
+			eventID, err := strconv.ParseUint(eventIDStr, 10, 32)
+			if err != nil {
+				continue
+			}
+			var event models.Event
+			if err := tx.Where("id = ?", eventID).First(&event).Error; err == nil {
+				events = append(events, event)
+			}
+		}
+		if err := tx.Model(&book).Association("Events").Replace(events); err != nil {
+			tx.Rollback()
+			log.Println("Failed to update events", err)
+			c.JSON(500, gin.H{"error": "Failed to update events"})
+			return
+		}
+	} else {
+	/* no events in payload - clear relation */
+		if err := tx.Model(&book).Association("Events").Clear(); err != nil {
+			tx.Rollback()
+			log.Println("Failed to clear events", err)
+			c.JSON(500, gin.H{"error": "Failed to clear events"})
+			return
+		}
+	}
+
+	if len(request.SelectedTags) > 0 {
+		var tags []models.Tag
+		for _, tagID := range request.SelectedTags {
+			var tag models.Tag
+			if err := tx.Where("id = ?", tagID).First(&tag).Error; err == nil {
+				tags = append(tags, tag)
+			}
+		}
+		if err := tx.Model(&book).Association("Tags").Replace(tags); err != nil {
+			tx.Rollback()
+			log.Println("Failed to update tags", err)
+			c.JSON(500, gin.H{"error": "Failed to update tags"})
+			return
+		}
+	} else {
+	/* no tags in payload - clear relation */
+		if err := tx.Model(&book).Association("Tags").Clear(); err != nil {
+			tx.Rollback()
+			log.Println("Failed to clear tags", err)
+			c.JSON(500, gin.H{"error": "Failed to clear tags"})
+			return
+		}
+	}
+
+	tx.Commit()
+	c.JSON(200, gin.H{"message": "Book updated successfully"})
 }

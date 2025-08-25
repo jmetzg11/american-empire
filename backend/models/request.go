@@ -31,3 +31,8 @@ type NewBookRequest struct {
 	Events string `json:"events" binding:"required"`
 	SelectedTags []uint `json:"selectedTags" binding:"required"`
 }
+
+type EditBookRequest struct {
+	NewBookRequest
+	ID uint `json:"id" binding:"required"`
+}

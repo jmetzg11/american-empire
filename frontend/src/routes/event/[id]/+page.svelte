@@ -16,6 +16,9 @@
 			console.error('Error in onMount:', error);
 		}
 	});
+	function showMoreBookDetails() {
+		console.log('show more book details');
+	}
 </script>
 
 <div>

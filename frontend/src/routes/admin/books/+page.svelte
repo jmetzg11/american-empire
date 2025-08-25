@@ -7,15 +7,13 @@
 
 	onMount(async () => {
 		try {
-			let data = await getBooks();
-			books = data;
-			console.log(data);
+			let results = await getBooks();
+			books = results.data;
 		} catch (error) {
 			console.error('Faile to get books', error);
 		}
 	});
 </script>
 
-<h1>Books</h1>
 <Books {books} />
 <NewBook />

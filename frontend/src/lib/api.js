@@ -84,6 +84,23 @@ export async function getTags() {
 	}
 }
 
+export async function getBook(bookId) {
+    try {
+        const url = `/api/book/${bookId}` 
+        const response = await fetch(url)
+        const data = await response.json()
+
+        if (!response.ok) {
+            console.error(`Server error:`, data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        console.error("Error fetching book", error)
+        return false
+    }
+}
+
 // Admin
 
 export async function login(username, password) {
@@ -408,10 +425,17 @@ export async function getBooks() {
         if (!response.ok) {
             console.error('Server error:', data.error || data.message)
         }
-        return data 
+        return {
+            ok: true,
+            data: data,
+            status: response.status
+        } 
     } catch (error) {
         console.error('Error fetching books', error)
-        return false
+        return {
+            ok: false, 
+            status: 500
+        }
     }
 }
 
@@ -440,5 +464,38 @@ export async function submitNewBook(payload) {
             ok: false, 
             status: 500, 
         }
+    }
+}
+
+export async function editBook(payload) {
+    console.log(payload)
+    try {
+        const url = '/api/admin-edit-book';
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Server error:', data.error || data.message);
+        }
+
+        return {
+            ok: response.ok,
+            status: response.status,
+            data: data
+        };
+    } catch (error) {
+        console.error('Error editing book', error);
+        return {
+            ok: false,
+            status: 500,
+            data: { success: false, message: 'Failed to edit book' }
+        };
     }
 }

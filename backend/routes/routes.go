@@ -35,6 +35,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 		apiRouter.POST("/event", handler.GetEvent)
 		apiRouter.POST("/contribute", handler.ContributeEvent)
 		apiRouter.GET("/tags", handler.GetTags)
+		apiRouter.GET("/book/:id", handler.GetBook)
 
 		// admin routes
 		apiRouter.GET("/auth-me", mgin.NewMiddleware(authLimiter), handler.AuthMe)
@@ -53,6 +54,7 @@ func SetupAPIRoutes(router *gin.Engine) {
 			adminRoutes.POST("/admin-add-source", handler.AddSources)
 			adminRoutes.GET("/admin-get-books", handler.GetBooks)
 			adminRoutes.POST("/admin-add-book", handler.AddBook)
+			adminRoutes.POST("/admin-edit-book", handler.EditBook)
 		}
 	}
 }
