@@ -57,6 +57,24 @@ This is a full-stack web application for tracking historical events with an admi
 
 **Development Proxy**: Vite proxies `/api` requests to `localhost:8080` for the Go backend
 
+### Django Admin (Content Management)
+- **Framework**: Django with uv package management
+- **Purpose**: Local content management interface for managing Events, Sources, Media, Tags, and Books
+- **Database**: Shares the same database as Go backend (SQLite for dev, PostgreSQL for prod)
+- **Authentication**: Uses ADMIN_USERNAME/ADMIN_PASSWORD from .env file
+
+**Commands** (`admin/` directory):
+- `make dev` - Start Django admin on SQLite database (development)
+- `make prod` - Start Django admin on PostgreSQL database (production)
+- `make stop` - Stop Django server
+- `make shell` - Access Django shell
+- `make migrate` - Run Django migrations (dev database only)
+
+**Models** (`admin/core/models.py`):
+- Mirrors Go models: Event, Source, Media, Tag, Book
+- Uses same database tables as Go application
+- Provides Django admin interface for content management
+
 ### Environment Configuration
 - **Development**: SQLite database, local file storage, GIN_MODE not set to "release"
 - **Production**: PostgreSQL via DATABASE_URL, Supabase storage via SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
@@ -71,9 +89,15 @@ Events are the central entity with:
 
 ## Development Workflow
 
+### Public Application
 1. Start backend: `make run`
 2. Start frontend: `cd frontend && npm run dev`
 3. Access app at `http://localhost:5173` (frontend dev server)
 4. API requests proxy through to `http://localhost:8080`
 
-The application supports both local development and cloud deployment on Fly.io with separate Dockerfiles for frontend and backend.
+### Content Management
+1. Start Django admin: `cd admin && make dev` (development) or `make prod` (production)
+2. Access admin at `http://localhost:8000/admin/`
+3. Login with ADMIN_USERNAME/ADMIN_PASSWORD from .env file
+
+The Django admin is for local content management only.
