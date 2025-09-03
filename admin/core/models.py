@@ -1,4 +1,7 @@
+import os
 from django.db import models
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
@@ -30,10 +33,15 @@ class Source(models.Model):
         return self.name
 
 class Media(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('photo', 'Photo'),
+        ('youtube', 'YouTube'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='medias')
-    type = models.CharField(max_length=100, blank=True)
-    url = models.URLField(blank=True)
+    type = models.CharField(max_length=100, choices=MEDIA_TYPE_CHOICES, blank=True)
+    url = models.CharField(max_length=500, blank=True, help_text="For YouTube: enter video ID (e.g., LDYwIOWbeRU) or full URL")
     path = models.CharField(max_length=500, blank=True)
     caption = models.CharField(max_length=500, blank=True)
 
@@ -42,11 +50,22 @@ class Media(models.Model):
 
     def __str__(self):
         return f"{self.type} for {self.event.title}"
+    
+    def image_preview(self):
+        if self.path and self.type and self.type.lower() == 'photo':
+            if os.environ.get('ENVIRONMENT') == 'production':
+                image_url = f"{os.environ.get('PROD_IMAGE_PREFIX', '')}/{self.path}"
+            else:
+                image_url = f"{os.environ.get('DEV_IMAGE_PREFIX', 'http://localhost:8080/photos')}/{self.path}"
+            return format_html('<img src="{}" style="max-width: 200px; max-height: 200px;" />', image_url)
+        return "No image"
+    
+    image_preview.short_description = "Preview"
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
-    events = models.ManyToManyField(Event, through='EventTag', related_name='tags')
+    events = models.ManyToManyField(Event, db_table='event_tags', related_name='tags')
 
     class Meta:
         db_table = 'tags'
@@ -59,8 +78,8 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     link = models.URLField()
-    events = models.ManyToManyField(Event, through='BookEvent', related_name='books')
-    tags = models.ManyToManyField(Tag, through='BookTag', related_name='books')
+    events = models.ManyToManyField(Event, db_table='book_events', related_name='books')
+    tags = models.ManyToManyField(Tag, db_table='book_tags', related_name='books')
 
     class Meta:
         db_table = 'books'
@@ -68,23 +87,3 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
-class EventTag(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'event_tags'
-
-class BookEvent(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'book_events'
-
-class BookTag(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'book_tags'

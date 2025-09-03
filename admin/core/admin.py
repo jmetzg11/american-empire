@@ -8,6 +8,7 @@ class SourceInline(admin.TabularInline):
 class MediaInline(admin.TabularInline):
     model = Media
     extra = 1
+    readonly_fields = ['image_preview']
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
@@ -33,5 +34,6 @@ class SourceAdmin(admin.ModelAdmin):
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ['type', 'event', 'caption', 'url', 'path']
+    list_display = ['type', 'event', 'caption', 'url', 'path', 'image_preview']
     list_filter = ['type', 'event']
+    readonly_fields = ['image_preview']
