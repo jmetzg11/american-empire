@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from core.models import Event, Tag, Source, Media
 
 
@@ -27,7 +27,7 @@ class Command(BaseCommand):
         events_data = [
             {
                 'title': 'CIA Operation Mockingbird',
-                'date': datetime(1950, 3, 15, 0, 0, 0, tzinfo=timezone.utc),
+                'date': date(1950, 3, 15),
                 'country': 'USA',
                 'description': """Operation Mockingbird was a large-scale program of the United States Central Intelligence Agency that began in the early years of the Cold War.
 
@@ -53,7 +53,7 @@ Key aspects included:
             },
             {
                 'title': 'Operation Condor South America',
-                'date': datetime(1975, 11, 28, 0, 0, 0, tzinfo=timezone.utc),
+                'date': date(1975, 11, 28),
                 'country': 'Chile',
                 'description': """Operation Condor was a United States-backed campaign of political repression and state terror involving intelligence operations and assassination.
 
@@ -76,7 +76,7 @@ Coordinated efforts included:
             },
             {
                 'title': 'Iran-Contra Weapons Sales',
-                'date': datetime(1985, 8, 20, 0, 0, 0, tzinfo=timezone.utc),
+                'date': date(1985, 8, 20),
                 'country': 'Nicaragua',
                 'description': """The Iran-Contra affair was a political scandal that occurred during the second term of the Reagan Administration.
 

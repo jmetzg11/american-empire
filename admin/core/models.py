@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
-    date = models.DateTimeField(db_index=True)
+    date = models.DateField(db_index=True)
     country = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,13 +54,45 @@ class Media(models.Model):
     def image_preview(self):
         if self.path and self.type and self.type.lower() == 'photo':
             if os.environ.get('ENVIRONMENT') == 'production':
-                image_url = f"{os.environ.get('PROD_IMAGE_PREFIX', '')}/{self.path}"
+                # Production: Use Supabase URL
+                supabase_url = os.environ.get('SUPABASE_URL', '')
+                if supabase_url:
+                    image_url = f"{supabase_url}/storage/v1/object/public/photos/{self.path}"
+                else:
+                    return "Supabase not configured"
             else:
-                image_url = f"{os.environ.get('DEV_IMAGE_PREFIX', 'http://localhost:8080/photos')}/{self.path}"
+                # Development: Use Django media serving
+                image_url = f"/media/photos/{self.path}"
             return format_html('<img src="{}" style="max-width: 200px; max-height: 200px;" />', image_url)
         return "No image"
     
     image_preview.short_description = "Preview"
+    
+    def delete(self, *args, **kwargs):
+        if self.path and self.type and self.type.lower() == 'photo':
+            if os.environ.get('ENVIRONMENT') == 'production':
+                try:
+                    from supabase import create_client
+                    supabase_url = os.environ.get('SUPABASE_URL')
+                    supabase_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
+                    
+                    if supabase_url and supabase_key:
+                        supabase = create_client(supabase_url, supabase_key)
+                        supabase.storage.from_("photos").remove([self.path])
+                except Exception as e:
+                    print(f"Warning: Failed to delete photo from Supabase: {e}")
+            else:
+                # Development: Delete local file
+                try:
+                    from django.conf import settings
+                    file_path = os.path.join(settings.BASE_DIR.parent, 'data', 'photos', self.path)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                except Exception as e:
+                    # Log the error but don't prevent deletion of the database record
+                    print(f"Warning: Failed to delete local photo file: {e}")
+        
+        super().delete(*args, **kwargs)
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
