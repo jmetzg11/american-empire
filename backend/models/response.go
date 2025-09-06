@@ -11,10 +11,3 @@ type MainTableResponse struct {
 }
 
 
-type BookResponse struct {
-	ID     uint     `json:"id"`
-	Title  string   `json:"title"`
-	Author string   `json:"author"`
-	Tags   []string `json:"tags"`
-	Events []uint   `json:"events"`
-}

@@ -4,3 +4,12 @@ data
 tmp
 main
 fly.toml
+
+# Django
+admin/.venv/
+admin/__pycache__/
+admin/*/__pycache__/
+admin/staticfiles/
+admin/db.sqlite3
+admin/uv.lock
+__pycache__
