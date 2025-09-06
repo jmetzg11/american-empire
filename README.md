@@ -9,12 +9,14 @@ Explore techniques used by the United States to assert its global dominace.
 - Air (for Go hot reload): `go install github.com/cosmtrek/air@latest`
 
 ### Development Setup
-
-#### Public Application
 ```bash
-# Backend with hot reload
-go run cmd/migrate/main.go 
-go run cmd/seed/main.go
+# Start local PostgreSQL
+cd data && docker compose up -d postgres
+
+# Set up Django admin (migrations & superuser)
+cd admin && make dev
+
+# Backend with hot reload (new terminal)
 air
 
 # Frontend (new terminal)
@@ -23,13 +25,7 @@ npm install
 npm run dev
 ```
 
-#### Content Management (Local Only)
-```bash
-# Django admin interface
-cd admin
-make dev    # Development (SQLite database)
-# or
-make prod   # Production (PostgreSQL database)
-```
-
-Access the Django admin at `http://localhost:8000/admin/` with credentials from `.env` file.
+### Access Points
+- **Public App**: http://localhost:5173
+- **Django Admin**: http://localhost:8000/admin/
+- **Go API**: http://localhost:8080/api/
