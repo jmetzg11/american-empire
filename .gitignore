@@ -12,3 +12,4 @@ admin/*/__pycache__/
 admin/staticfiles/
 admin/db.sqlite3
 admin/uv.lock
+__pycache__

@@ -6,15 +6,6 @@ clean:
 	mkdir -p ./tmp
 	rm -f app
 
-clean-db:
-	rm -f ./data/american-empire.db
-
-migrate:
-	go run cmd/migrate/main.go 
-
-seed: 
-	go run cmd/seed/main.go
-
 test:
 	go test ./...
 

@@ -48,5 +48,4 @@ type Book struct {
 	Link   string `gorm:"not null"`
 
 	Events []Event `gorm:"many2many:book_events;joinForeignKey:book_id;joinReferences:event_id"`
-	Tags   []Tag   `gorm:"many2many:book_tags;joinForeignKey:book_id;joinReferences:tag_id"`
 }
