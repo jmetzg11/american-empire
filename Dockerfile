@@ -5,7 +5,6 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY main.go ./
 COPY backend/ ./backend/
-COPY cmd/ ./cmd/
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o main .
 
 FROM alpine:latest
