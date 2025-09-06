@@ -38,24 +38,31 @@ class MediaInline(admin.TabularInline):
     readonly_fields = ['image_preview']
     can_delete = True
     show_change_link = True
-    fields = ['type', 'url', 'path', 'caption', 'upload_file', 'image_preview'] 
+    fields = ['type', 'url', 'path', 'caption', 'upload_file', 'image_preview']
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['title', 'date', 'country', 'active', 'flagged', 'created_at']
-    list_filter = ['country', 'flagged', 'date']
+    list_filter = ['country', 'flagged', 'date', 'active']
     search_fields = ['title', 'description', 'country']
     inlines = [SourceInline, MediaInline]
+    readonly_fields = ['get_tags']
+    
+    def get_tags(self, obj):
+        return ', '.join([tag.name for tag in obj.tags.all()])
+    get_tags.short_description = 'Tags'
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
+    filter_horizontal = ['events']
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ['title', 'author']
     search_fields = ['title', 'author']
+    filter_horizontal = ['events']
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):

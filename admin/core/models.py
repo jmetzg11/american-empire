@@ -13,6 +13,10 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     active = models.DateTimeField(null=True, blank=True)
     flagged = models.BooleanField(default=False)
+    
+    @property
+    def tags(self):
+        return Tag.objects.filter(events=self)
 
     class Meta:
         db_table = 'events'
@@ -111,7 +115,6 @@ class Book(models.Model):
     author = models.CharField(max_length=255)
     link = models.URLField()
     events = models.ManyToManyField(Event, db_table='book_events', related_name='books')
-    tags = models.ManyToManyField(Tag, db_table='book_tags', related_name='books')
 
     class Meta:
         db_table = 'books'
