@@ -7,9 +7,12 @@ fly.toml
 
 # Django
 admin/.venv/
-admin/__pycache__/
-admin/*/__pycache__/
 admin/staticfiles/
 admin/db.sqlite3
 admin/uv.lock
-__pycache__
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
