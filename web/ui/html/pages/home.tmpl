@@ -1,0 +1,9 @@
+{{define "main"}}
+<h1>Events</h1>
+{{range .}}
+<div class="event">
+    <h2>{{.Title}}</h2>
+    <p>{{.Country}} - {{.Date}}</p>
+</div>
+{{end}}
+{{end}}

@@ -49,7 +49,6 @@ func (app *application) getMainPage() ([]EventSummary, error) {
 			return nil, err
 		}
 
-		// Split comma-separated tags into slice
 		if tagsStr != "" {
 			event.Tags = []string{}
 			for _, tag := range []string{tagsStr} {

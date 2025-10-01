@@ -1,4 +1,4 @@
-.PHONY: clean clean-db test run
+.PHONY: clean clean-db test run kill-port
 
 
 clean:
@@ -10,4 +10,11 @@ test:
 	go test ./...
 
 run:
-	go run main.go
+	cd web && air
+
+kill-port:
+	@if lsof -ti:8080 > /dev/null 2>&1; then \
+		lsof -ti:8080 | xargs kill -9 && echo "Killed process on port 8080"; \
+	else \
+		echo "No process using port 8080"; \
+	fi

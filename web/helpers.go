@@ -1,0 +1,91 @@
+package main
+
+import (
+	"bytes"
+	"database/sql"
+	"embed"
+	"fmt"
+	"os"
+	"net/http"
+	"io/fs"
+	"path/filepath"
+	"html/template"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+)
+
+//go:embed "ui/html" "ui/static"
+var Files embed.FS
+
+func connectDB(prod bool) (*sql.DB, error) {
+	var dsn string
+	if prod {
+		if err := godotenv.Load("../.env"); err != nil {
+			return nil, fmt.Errorf("failed to load .env file: %w", err)
+		}
+		dsn = os.Getenv("DATABASE_URL")
+		if dsn == "" {
+			return nil, fmt.Errorf("DATABASE_URL environment variable not set")
+		}
+		fmt.Println("Connecting to production database")
+	} else {
+		dsn = "postgresql://admin:admin@localhost:5432/american_empire?sslmode=disable"
+		fmt.Println("Connecting to local development database")
+	}
+
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("failed to ping database: %w", err)
+	}
+	fmt.Println("Database connection established")
+
+	return db, nil
+}
+
+func newTemplateCache()(map[string]*template.Template, error) {
+	cache := map[string]*template.Template{}
+
+	pages, err := fs.Glob(Files, "ui/html/pages/*.tmpl")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, page := range pages {
+		name := filepath.Base(page)
+
+		patterns := []string{
+			"ui/html/base.tmpl",
+			page,
+		}
+
+		ts, err := template.New(name).ParseFS(Files, patterns...)
+		if err != nil {
+			return nil, err 
+		}
+		cache[name] = ts 
+	}
+	return cache, nil
+}
+
+func (app *application) render(w http.ResponseWriter, status int, page string, data any) {
+	ts, ok := app.templateCache[page]
+	if !ok {
+		err := fmt.Errorf("the template %s does not exist", page)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	buf := new(bytes.Buffer)
+	err := ts.ExecuteTemplate(buf, "base", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(status)
+	buf.WriteTo(w)
+}

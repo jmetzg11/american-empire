@@ -1,7 +1,6 @@
 package main 
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -13,6 +12,6 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return 
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(events)
+
+	app.render(w, http.StatusOK, "home.tmpl", events)
 }
