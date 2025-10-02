@@ -7,7 +7,7 @@ import (
 type EventSummary struct {
 	ID int `json:"id"`
 	Title string `json:"title"`
-	Date time.Time `json:"date"`
+	Date string `json:"date"`
 	Country string `json:"countr"`
 	Tags []string `json:"tags"`
 }
@@ -37,17 +37,20 @@ func (app *application) getMainPage() ([]EventSummary, error) {
 	for rows.Next() {
 		var event EventSummary
 		var tagsStr string
+		var dateTime time.Time 
 
 		err := rows.Scan(
 			&event.ID,
 			&event.Title,
-			&event.Date,
+			&dateTime,
 			&event.Country,
 			&tagsStr,
 		)
 		if err != nil {
 			return nil, err
 		}
+
+		event.Date = dateTime.Format("2006 Jan 02")
 
 		if tagsStr != "" {
 			event.Tags = []string{}

@@ -1,9 +1,18 @@
-{{define "main"}}
-<h1>Events</h1>
-{{range .}}
-<div class="event">
-    <h2>{{.Title}}</h2>
-    <p>{{.Country}} - {{.Date}}</p>
-</div>
+{{define "css"}}
+<link rel="stylesheet" href="/static/pages/home.css">
 {{end}}
+
+{{define "main"}}
+<div class="container">
+<table>
+    {{range $index, $_ := .}}
+    <tr>
+    <td>{{$index + 1}}</td>
+        <td>{{.Title}}</td>
+        <td>{{.Country}}</td>
+        <td>{{.Date}}</td>
+    </tr>
+    {{end}}
+</table>
+</div>
 {{end}}
