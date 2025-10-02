@@ -49,6 +49,10 @@ func connectDB(prod bool) (*sql.DB, error) {
 func newTemplateCache()(map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int { return a + b },
+	}
+
 	pages, err := fs.Glob(Files, "ui/html/pages/*.tmpl")
 	if err != nil {
 		return nil, err
@@ -62,11 +66,11 @@ func newTemplateCache()(map[string]*template.Template, error) {
 			page,
 		}
 
-		ts, err := template.New(name).ParseFS(Files, patterns...)
+		ts, err := template.New(name).Funcs(funcMap).ParseFS(Files, patterns...)
 		if err != nil {
-			return nil, err 
+			return nil, err
 		}
-		cache[name] = ts 
+		cache[name] = ts
 	}
 	return cache, nil
 }

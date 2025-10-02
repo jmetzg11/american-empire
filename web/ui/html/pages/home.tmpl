@@ -4,10 +4,11 @@
 
 {{define "main"}}
 <div class="container">
+
 <table>
     {{range $index, $_ := .}}
     <tr>
-    <td>{{$index + 1}}</td>
+        <td>{{add $index 1}}</td>
         <td>{{.Title}}</td>
         <td>{{.Country}}</td>
         <td>{{.Date}}</td>
