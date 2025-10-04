@@ -1,3 +1,12 @@
+:root {
+    --bg-primary: #f0f0f0;
+    --bg-secondary: #e0e0e0;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border: #808080;
+    --link: #0000ff;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,9 +18,19 @@ body, html {
 }
 
 .main {
-    background-color: pink;
+    background-color: var(--bg-primary);
 }
 
 .container {
-    padding: 5px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.tags {
+    background: #add8e6;
+    border-radius: 10px;
+    padding: 4px 10px;
+    margin-right: 6px;
+    display: inline-block;
 }

@@ -1,3 +1,16 @@
 table {
-    background-color: yellow;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary)
+}
+
+tr:hover {
+    background-color: var(--bg-secondary);
+    cursor: pointer;
 }

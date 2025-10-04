@@ -4,18 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-### Backend (Go)
-- `air` - Start the Go backend server with hot reload on port 8080 (development)
-- `make run` - Start the Go backend server on port 8080 (production)
-- `make test` - Run Go tests
+### Main Commands
+- `make run` - Start database, Django admin, and Go web server (complete development environment)
+- `make stop` - Stop all services (Django, Go, database)
+- `make restart` - Clean and restart Go web server
+- `make start-db` - Start PostgreSQL Docker container
 - `make clean` - Clean build artifacts and recreate tmp directory
+- `make test` - Run Go tests
+- `make kill-port` - Kill process on port 8080
 
-### Frontend (SvelteKit)
-- `cd frontend && npm run dev` - Start development server with Vite
-- `cd frontend && npm run build` - Build for production
-- `cd frontend && npm run preview` - Preview production build
-- `cd frontend && npm run lint` - Run Prettier code formatting check
-- `cd frontend && npm run format` - Format code with Prettier
+### Go Web Server
+- `cd web && air` - Start Go web server with hot reload on port 8080 (development)
 
 ### Django Admin (Content Management)
 - `cd admin && make dev` - Start Django admin on local Docker database (development)
@@ -26,45 +25,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-This is a full-stack web application for tracking historical events with a clean separation between public API and admin functionality.
+This is a full-stack web application for tracking historical events with a clean separation between public web interface and admin functionality.
 
-### Backend (Go + Gin) - Public API Only
-- **Main server**: `main.go` - Gin web server on port 8080
-- **Database**: GORM with PostgreSQL (always uses DATABASE_URL)
-- **File storage**: Local filesystem (development) / Supabase storage (production)
-- **Purpose**: Serves public API and handles public contributions
+### Go Web Server (`web/`) - Public Interface
+- **Main server**: `web/main.go` - HTTP server on port 8080
+- **Database**: Standard library `database/sql` with PostgreSQL driver (`lib/pq`)
+- **Templates**: Go `html/template` for server-side rendering
+- **Purpose**: Serves public web pages with HTML templates
 
-**Key Models** (`backend/models/models.go`):
-- `Event` - Main content entity with title, date, country, description
-- `Source` - Links/references for events
-- `Media` - Photos/videos attached to events
-- `Tag` - Categorization system with many-to-many relationship
-- `Book` - Book recommendations with many-to-many relationship to events
+**Key Files**:
+- `main.go` - HTTP server setup, database connection, template caching
+- `routes.go` - Route definitions and static file serving
+- `handlers.go` - HTTP request handlers
+- `models.go` - Database queries and data models
+- `helpers.go` - Template rendering and database connection utilities
 
-**API Structure** (`backend/routes/routes.go`):
-- `GET /api/` - List all active events
-- `POST /api/event` - Get single event details
-- `POST /api/contribute` - Submit new event (public contributions)
-- `GET /api/tags` - List all tags
-- `GET /api/book/:id` - Get book details
+**Template Structure** (`web/ui/html/`):
+- `base.tmpl` - Base HTML layout
+- `pages/` - Page-specific templates
 
-**Photo Storage**:
-- Development: Local files in `data/photos/`, served at `/photos`
-- Production: Supabase storage, served directly from CDN
-- Uses `InitSupabase()` and `saveUploadedPhoto()` for public contributions
+**Static Assets** (`web/ui/static/`):
+- CSS, JavaScript, and other static files
+- Served at `/static/` path
 
-### Frontend (SvelteKit + Tailwind) - Public Interface Only
-- **Framework**: SvelteKit with Vite build system
-- **Styling**: Tailwind CSS v4
-- **API Communication**: Direct fetch calls to Go backend
-- **Routing**: File-based routing with SvelteKit conventions
+**Routes**:
+- `GET /` - Home page displaying all active events in a table
+- `GET /static/*` - Static file serving
 
-**Key Routes**:
-- `/` - Public event listing with filtering
-- `/event/[id]` - Individual event details
-- `/contribute` - Public event submission form
-
-**Development Proxy**: Vite proxies `/api` requests to `localhost:8080` for the Go backend
+**Database Models**:
+- `EventSummary` - Displays event ID, title, date, country, and tags
 
 ### Django Admin (Content Management)
 - **Framework**: Django with uv package management
@@ -85,19 +74,18 @@ This is a full-stack web application for tracking historical events with a clean
 - Provides Django admin interface with inlines and filtering
 
 ### Environment Configuration
-- **Development**: 
-  - Go: Uses local Docker PostgreSQL (`postgresql://admin:admin@localhost:5432/american_empire`)
-  - Django: Uses local Docker PostgreSQL
-  - Photos: Stored locally in `data/photos/`
-- **Production**: 
-  - Both Go and Django: Use Supabase PostgreSQL via DATABASE_URL
-  - Photos: Stored in Supabase storage, served from CDN
+- **Development**:
+  - Go: Uses local Docker PostgreSQL (connection string in `helpers.go:connectDB()`)
+  - Django: Uses local Docker PostgreSQL via DB_* environment variables
+- **Production**:
+  - Go: Uses production PostgreSQL via DATABASE_URL
+  - Django: Uses Supabase PostgreSQL via DATABASE_URL
 
 **Key Environment Variables**:
-- `DATABASE_URL` - PostgreSQL connection (required for both Go and Django)
+- `DATABASE_URL` - PostgreSQL connection (production)
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` - Django database config (development)
 - `ADMIN_USERNAME/ADMIN_PASSWORD` - Django admin credentials
-- `SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY` - For photo storage (production only)
-- `GMAIL_USER/GMAIL_PASS` - For contribution notifications
+- `DEBUG` - Django debug mode
 
 ### Database Schema
 Events are the central entity with:
@@ -110,45 +98,46 @@ Events are the central entity with:
 ## Development Workflow
 
 ### Full Development Setup
+1. Quick start: `make run` (starts database, Django admin, and Go web server)
+2. Access web app at `http://localhost:8080`
+3. Access admin at `http://localhost:8000/admin/`
+
+### Manual Setup
 1. Start local PostgreSQL: `cd data && docker compose up -d postgres`
 2. Start Django admin: `cd admin && make dev`
-3. Start Go backend: `make run` or `air`
-4. Start frontend: `cd frontend && npm run dev`
-5. Access public app at `http://localhost:5173`
-6. Access admin at `http://localhost:8000/admin/`
+3. Start Go web server: `cd web && air`
 
 ### Content Management Workflow
 1. Django admin is the primary interface for all content management
-2. Go backend only handles public API and contributions
-3. Public contributions are submitted via Go API and managed via Django admin
-4. All CRUD operations for events, tags, sources, media happen in Django admin
+2. Go web server only displays public content
+3. All CRUD operations for events, tags, sources, media happen in Django admin
+4. Go server queries the database in read-only mode for public display
 
 ### Production Deployment
-- Go backend serves public API only
-- Frontend is static SvelteKit build
+- Go web server serves public HTML pages
 - Django admin runs separately for content management
-- Both share the same Supabase PostgreSQL database
+- Both share the same PostgreSQL database (Supabase in production)
 
 ## Important Notes for Development
 
 **Admin Functionality**:
-- ALL admin functionality has been moved to Django
-- Go backend no longer has JWT authentication, admin routes, or admin handlers
-- No admin-related code remains in the frontend
+- ALL admin functionality is in Django
+- Go web server has NO admin functionality - it's read-only for public display
+- No authentication or user management in Go
 
 **Database Connection**:
-- Go backend requires `DATABASE_URL` environment variable
-- Django uses DB_* variables from .env when available, falls back to defaults
+- Go: Uses flag-based environment selection (`-prod` flag for production)
+- Django: Uses DB_* variables from .env when available, falls back to defaults
 - Both connect to the same PostgreSQL database
 
-**Photo Management**:
-- Public contributions can upload photos via Go API
-- Photo management (delete, edit) happens in Django admin
-- Production photos served directly from Supabase CDN
+**Template System**:
+- Go uses standard library `html/template`
+- Templates are cached at startup for performance
+- Templates are embedded in the binary using `embed.FS`
 
 # Important Instructions
 - Use Django admin for ALL content management tasks
-- Go backend is PUBLIC API ONLY - no admin functionality
-- Frontend is PUBLIC INTERFACE ONLY - no admin routes
-- Database operations should prefer Django admin over direct SQL
-- When adding features, consider whether it belongs in public API (Go) or admin (Django)
+- Go web server is PUBLIC DISPLAY ONLY - read-only database access
+- No admin routes or functionality in Go
+- Database writes only happen through Django admin
+- When adding features, consider whether it belongs in public display (Go) or admin (Django)

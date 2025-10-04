@@ -12,6 +12,13 @@
         <td>{{.Title}}</td>
         <td>{{.Country}}</td>
         <td>{{.Date}}</td>
+        <td>
+            {{range .Tags}}
+                <span class='tags'>
+                    {{.}}
+                </span>
+            {{end}}
+        </td>
     </tr>
     {{end}}
 </table>

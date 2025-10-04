@@ -1,15 +1,17 @@
-package main 
+package main
 
 import (
+	"fmt"
+	"strings"
 	"time"
 )
 
 type EventSummary struct {
-	ID int `json:"id"`
-	Title string `json:"title"`
-	Date string `json:"date"`
-	Country string `json:"countr"`
-	Tags []string `json:"tags"`
+	ID      int      `json:"id"`
+	Title   string   `json:"title"`
+	Date    string   `json:"date"`
+	Country string   `json:"countr"`
+	Tags    []string `json:"tags"`
 }
 
 func (app *application) getMainPage() ([]EventSummary, error) {
@@ -37,7 +39,7 @@ func (app *application) getMainPage() ([]EventSummary, error) {
 	for rows.Next() {
 		var event EventSummary
 		var tagsStr string
-		var dateTime time.Time 
+		var dateTime time.Time
 
 		err := rows.Scan(
 			&event.ID,
@@ -53,12 +55,7 @@ func (app *application) getMainPage() ([]EventSummary, error) {
 		event.Date = dateTime.Format("2006 Jan 02")
 
 		if tagsStr != "" {
-			event.Tags = []string{}
-			for _, tag := range []string{tagsStr} {
-				if tag != "" {
-					event.Tags = append(event.Tags, tag)
-				}
-			}
+			event.Tags = strings.Split(tagsStr, ",")
 		} else {
 			event.Tags = []string{}
 		}
@@ -68,6 +65,7 @@ func (app *application) getMainPage() ([]EventSummary, error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	fmt.Printf("%+v\n", events)
 
 	return events, nil
 }
