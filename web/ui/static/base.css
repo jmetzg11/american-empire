@@ -6,6 +6,10 @@
     --text-secondary: #666666;
     --border: #808080;
     --link: #0000ff;
+    --font-size-extra-large: 32px;
+    --font-size-large: 24px;
+    --font-size-medium: 18px;
+    --font-size-small: 14px;
 }
 
 * {
@@ -18,9 +22,19 @@ body, html {
     height: 100%;
 }
 
+h1 {
+    font-size: var(--font-size-extra-large);
+    font-weight: bold;
+}
+
+h2 {
+    font-size: var(--font-size-large);
+    font-weight: bold;
+}
+
 .main {
     background-color: var(--bg-primary);
-    height: 100%;
+    min-height: 100vh;
 }
 
 .container {
