@@ -5,12 +5,12 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
-	"os"
-	"net/http"
-	"io/fs"
-	"path/filepath"
 	"html/template"
-	"github.com/joho/godotenv"
+	"io/fs"
+	"net/http"
+	"os"
+	"path/filepath"
+
 	_ "github.com/lib/pq"
 )
 
@@ -20,9 +20,6 @@ var Files embed.FS
 func connectDB(prod bool) (*sql.DB, error) {
 	var dsn string
 	if prod {
-		if err := godotenv.Load("../.env"); err != nil {
-			return nil, fmt.Errorf("failed to load .env file: %w", err)
-		}
 		dsn = os.Getenv("DATABASE_URL")
 		if dsn == "" {
 			return nil, fmt.Errorf("DATABASE_URL environment variable not set")
@@ -46,7 +43,7 @@ func connectDB(prod bool) (*sql.DB, error) {
 	return db, nil
 }
 
-func newTemplateCache()(map[string]*template.Template, error) {
+func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	funcMap := template.FuncMap{

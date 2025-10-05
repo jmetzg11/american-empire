@@ -1,6 +1,7 @@
 :root {
     --bg-primary: #f0f0f0;
-    --bg-secondary: #e0e0e0;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e0e0e0;
     --text-primary: #333333;
     --text-secondary: #666666;
     --border: #808080;
@@ -34,3 +35,4 @@ body, html {
     margin-right: 6px;
     display: inline-block;
 }
+

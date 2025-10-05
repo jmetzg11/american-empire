@@ -4,23 +4,33 @@
 
 {{define "main"}}
 <div class="container">
-
-<table>
-    {{range $index, $_ := .}}
-    <tr>
-        <td>{{add $index 1}}</td>
-        <td>{{.Title}}</td>
-        <td>{{.Country}}</td>
-        <td>{{.Date}}</td>
-        <td>
-            {{range .Tags}}
-                <span class='tags'>
-                    {{.}}
-                </span>
-            {{end}}
-        </td>
-    </tr>
-    {{end}}
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Country</th>
+                <th>Date</th>
+                <th>Tags</th>
+            <tr>
+        </thead>
+        {{range $index, $_ := .}}
+        <tbody>
+            <tr onclick="window.location='/event/{{.ID}}'">
+                <td>{{add $index 1}}</td>
+                <td>{{.Title}}</td>
+                <td>{{.Country}}</td>
+                <td>{{.Date}}</td>
+                <td>
+                    {{range .Tags}}
+                        <span class='tags'>
+                            {{.}}
+                        </span>
+                    {{end}}
+                </td>
+            </tr>
+        </tbody>
+        {{end}}
+    </table>
 </div>
 {{end}}

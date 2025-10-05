@@ -1,7 +1,16 @@
 table {
     width: 100%;
+    background-color: var(--bg-secondary);
     border-collapse: collapse;
     border: 1px solid var(--border);
+}
+
+th {
+    padding: 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: left;
 }
 
 td {
@@ -10,7 +19,7 @@ td {
     color: var(--text-primary)
 }
 
-tr:hover {
-    background-color: var(--bg-secondary);
+tbody tr:hover {
+    background-color: var(--bg-tertiary);
     cursor: pointer;
 }

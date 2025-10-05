@@ -1,10 +1,8 @@
-.PHONY: clean clean-db test run kill-port start-db stop
+.PHONY: clean clean-db test run kill-port start-db stop restart
 
 
 clean:
-	rm -rf ./tmp
-	mkdir -p ./tmp
-	rm -f app
+	rm -rf ./web/tmp/*
 
 test:
 	go test ./...
@@ -29,10 +27,6 @@ kill-port:
 		echo "No process using port 8080"; \
 	fi
 
-restart: clean
-	@pkill -f "air" || true
-	cd web && air
-
 stop:
 	@echo "Stopping Django admin..."
 	-@pkill -f "manage.py runserver" 2>/dev/null || true
@@ -40,3 +34,8 @@ stop:
 	-@$(MAKE) kill-port
 	@echo "Stopping database..."
 	-@cd data && docker-compose down -v
+
+restart:
+	$(MAKE) stop
+	$(MAKE) clean
+	$(MAKE) run 

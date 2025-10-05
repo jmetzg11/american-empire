@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
@@ -18,6 +19,11 @@ type application struct {
 }
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load("../.env"); err != nil {
+		log.Printf("Warning: failed to load .env file: %v", err)
+	}
+
 	prod := flag.Bool("prod", false, "Use production environment")
 	flag.Parse()
 
@@ -39,7 +45,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         ":8080",
-		Handler:      app.routes(),
+		Handler:      app.routes(*prod),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
