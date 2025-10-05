@@ -1,0 +1,64 @@
+{{define "css"}}
+<link rel="stylesheet" href="/static/pages/event.css">
+{{end}}
+
+{{define "main"}}
+<div class="container">
+    <div>
+
+        <div class='section'>
+            <div>{{.Title}}</div>
+                {{range .Tags}}
+                    <span class='tags'>
+                        {{.}}
+                    </span>
+                {{end}}
+            <div>{{.Date}}</div>
+            <div>{{.Country}}</div>
+        </div>
+
+        <div class='section description'>
+            {{.Description}}
+        </div>
+
+        <div class='section'>
+            <h2>Sources</h2>
+            {{range .Sources}}
+            <div>{{.Name}}</div>
+            <div>{{.URL}}</div>
+            {{end}}
+        </div>
+
+        <div class='section media-container'>
+            {{range .Medias}}
+                {{if eq .Type "photo"}}
+                    <div class="media-item">
+                        <img src="{{.URL}}" alt="{{.Caption}}">
+                        {{if .Caption}}<p class="caption">{{.Caption}}</p>{{end}}
+                    </div>
+                {{else if eq .Type "youtube"}}
+                    <div class="media-item">
+                        <iframe
+                            src="https://www.youtube.com/embed/{{.URL}}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                        {{if .Caption}}<p class="caption">{{.Caption}}</p>{{end}}
+                    </div>
+                {{end}}
+            {{end}}
+        </div>
+
+        <div class='section'>
+            <h2>Bookssss</h2>
+            {{range .Books}}
+                <div>{{.Title}}</div>
+                <div>{{.Author}}</div>
+                <div>{{.Link}}</div>
+            {{end}}
+        </div>
+
+    </div>
+</div>
+{{end}}

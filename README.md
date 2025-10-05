@@ -1,31 +1,36 @@
 # American Empire
 
-Explore techniques used by the United States to assert its global dominace. 
+Explore techniques used by the United States to assert its global dominance.
 
-### Prerequisites 
+### Prerequisites
 - Go 1.23+
-- Node.js 18+ 
 - Python 3.12+ with uv
 - Air (for Go hot reload): `go install github.com/cosmtrek/air@latest`
+- Docker & Docker Compose
 
 ### Development Setup
 ```bash
-# Start local PostgreSQL
+# Quick start - runs database, Django admin, and Go web server
+make run
+
+# Or manually:
+# 1. Start local PostgreSQL
 cd data && docker compose up -d postgres
 
-# Set up Django admin (migrations & superuser)
+# 2. Start Django admin with migrations & seeding
 cd admin && make dev
 
-# Backend with hot reload (new terminal)
-air
-
-# Frontend (new terminal)
-cd frontend
-npm install
-npm run dev
+# 3. Start Go web server with hot reload
+cd web && air
 ```
 
 ### Access Points
-- **Public App**: http://localhost:5173
+- **Web App**: http://localhost:8080
 - **Django Admin**: http://localhost:8000/admin/
-- **Go API**: http://localhost:8080/api/
+
+### Architecture
+- **Go Web Server** (`web/`): HTML templates with server-side rendering
+- **Django Admin** (`admin/`): Content management interface
+- **PostgreSQL**: Shared database for both Go and Django
+- **Templates**: Go html/template in `web/ui/html/`
+- **Static Assets**: CSS/JS in `web/ui/static/`

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from datetime import datetime, timezone, date
-from core.models import Event, Tag, Source, Media
+from core.models import Event, Tag, Source, Media, Book
 
 
 class Command(BaseCommand):
@@ -14,6 +14,18 @@ class Command(BaseCommand):
             return
 
         active_date = datetime(2025, 6, 15, 0, 0, 0, tzinfo=timezone.utc)
+
+        # Create books
+        book1, _ = Book.objects.get_or_create(
+            title='Example One',
+            author='John Doe',
+            link='https://buybook.com'
+        )
+        book2, _ = Book.objects.get_or_create(
+            title='Example Two',
+            author='Jane Doe',
+            link='https://buybook.com'
+        )
 
         # Create tags
         tag_names = ["CIA", "Propaganda", "Cold War", "Journalism", "South America", "Human Rights", "Weapons", "Nicaragua", "Iran", "Reagan"]
@@ -44,9 +56,9 @@ Key aspects included:
                     {'name': 'Declassified CIA Documents', 'url': 'https://cia.gov/mockingbird-files'},
                 ],
                 'medias': [
-                    {'type': 'photo', 'path': '/1/sample.jpg', 'caption': 'Church Committee Report'},
-                    {'type': 'photo', 'path': '/1/sample2.jpeg', 'caption': 'Cool Report'},
-                    {'type': 'photo', 'path': '/1/sample3.jpeg', 'caption': 'Different Report'},
+                    {'type': 'photo', 'path': '1/sample.jpg', 'caption': 'Church Committee Report'},
+                    {'type': 'photo', 'path': '1/sample2.jpeg', 'caption': 'Cool Report'},
+                    {'type': 'photo', 'path': '1/sample3.jpeg', 'caption': 'Different Report'},
                     {'type': 'youtube', 'url': 'bDjGJzBdAwY', 'caption': 'Declassified CIA Documents'},
                     {'type': 'youtube', 'url': 'bGAFTaelGRk', 'caption': 'Declassified FBI Documents'},
                 ],
@@ -70,7 +82,7 @@ Coordinated efforts included:
                     {'name': 'FBI FOIA Release', 'url': 'https://fbi.gov/condor-documents'},
                 ],
                 'medias': [
-                    {'type': 'photo', 'path': '/2/sample.jpeg', 'caption': 'National Security Archive'},
+                    {'type': 'photo', 'path': '2/sample.jpeg', 'caption': 'National Security Archive'},
                     {'type': 'youtube', 'url': 'bDjGJzBdAwY', 'caption': 'FBI FOIA Release'},
                 ],
             },
@@ -93,7 +105,7 @@ This covert operation involved:
                     {'name': 'Walsh Report', 'url': 'https://justice.gov/walsh-final-report'},
                 ],
                 'medias': [
-                    {'type': 'photo', 'path': '/3/sample.png', 'caption': 'Tower Commission Report'},
+                    {'type': 'photo', 'path': '3/sample.png', 'caption': 'Tower Commission Report'},
                     {'type': 'youtube', 'url': 'bDjGJzBdAwY', 'caption': 'Walsh Report'},
                 ],
             },
@@ -130,6 +142,9 @@ This covert operation involved:
                     path=media_data.get('path', ''),
                     caption=media_data['caption']
                 )
+
+            # Add books
+            event.books.add(book1, book2)
 
         self.stdout.write(
             self.style.SUCCESS('Database seeded successfully!')
