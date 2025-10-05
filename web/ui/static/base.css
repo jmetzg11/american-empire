@@ -20,12 +20,24 @@ body, html {
 
 .main {
     background-color: var(--bg-primary);
+    height: 100%;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+}
+
+.btn {
+    background-color: var(--bg-tertiary);
+    border: 2px outset var(--border);
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.btn:active {
+    border-style: inset;
 }
 
 .tags {

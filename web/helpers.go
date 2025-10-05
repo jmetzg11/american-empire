@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 
 	_ "github.com/lib/pq"
+	"golang.org/x/time/rate"
 )
 
 //go:embed "ui/html" "ui/static"
@@ -89,4 +90,16 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 
 	w.WriteHeader(status)
 	buf.WriteTo(w)
+}
+
+var limiter = rate.NewLimiter(2, 5)
+
+func rateLimit(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !limiter.Allow() {
+			http.Error(w, "Too many requests", http.StatusTooManyRequests)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
