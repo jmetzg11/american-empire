@@ -19,11 +19,7 @@ def save_uploaded_photo(uploaded_file, event_id):
         
         try:
             uploaded_file.seek(0)  # Reset file pointer
-            result = supabase.storage.from_("photos").upload(path, uploaded_file.read())
-            
-            if result.get('error'):
-                raise Exception(f"Supabase upload error: {result['error']}")
-                
+            supabase.storage.from_("photos").upload(path, uploaded_file.read())
             return path
         except Exception as e:
             raise Exception(f"Failed to upload to Supabase: {str(e)}")
