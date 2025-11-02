@@ -25,7 +25,7 @@ func (app *application) getMainPage() ([]Event, error) {
 		FROM events e
 		LEFT JOIN event_tags et ON e.id = et.event_id
 		LEFT JOIN tags t ON et.tag_id = t.id
-		WHERE e.active IS NOT NULL
+		WHERE e.active IS NOT NULL AND e.flagged = False
 		GROUP BY e.id, e.title, e.date, e.country
 		ORDER BY e.date DESC
 	`
@@ -118,16 +118,16 @@ func (app *application) getEvent(id string) (DetailedEvent, error) {
 				'title', b.title,
 				'author', b.author,
 				'link', b.link
-			)) FILTER (WHERE b.id IS NOT NULL), '[]') as books 
+			)) FILTER (WHERE b.id IS NOT NULL), '[]') as books
 		FROM events e
 		LEFT JOIN event_tags et ON e.id = et.event_id
 		LEFT JOIN tags t ON et.tag_id = t.id
 		LEFT JOIN sources s ON e.id = s.event_id
 		LEFT JOIN media m ON e.id = m.event_id
-		LEFT JOIN book_events be ON e.id = be.event_id 
-		LEFT JOIN books b on be.book_id = b.id 
+		LEFT JOIN book_events be ON e.id = be.event_id
+		LEFT JOIN books b on be.book_id = b.id
 		WHERE e.active IS NOT NULL
-		AND e.id = $1 
+		AND e.id = $1
 		GROUP BY e.id, e.title, e.date, e.country, e.description
 	`
 
