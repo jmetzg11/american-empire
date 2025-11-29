@@ -4,6 +4,7 @@ data
 tmp
 main
 fly.toml
+node_modules
 
 # Django
 admin/.venv/

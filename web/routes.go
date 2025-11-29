@@ -18,6 +18,7 @@ func (app *application) routes(prod bool) http.Handler {
 	}
 
 	mux.HandleFunc("GET /{$}", app.homeHandler)
+	mux.HandleFunc("GET /books", app.books)
 	mux.HandleFunc("GET /contribute", app.contribute)
 	mux.HandleFunc("GET /event/{id}", app.eventDisplay)
 	mux.HandleFunc("GET /event/edit/{id}", app.eventEdit)

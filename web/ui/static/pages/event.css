@@ -1,81 +1,81 @@
-.section {
-    background-color: var(--bg-secondary);
-    margin-bottom: 30px;
-    padding: 20px;
+/* Event Page Styles */
+
+.event-container {
+    @apply max-w-6xl mx-auto p-5;
 }
 
-.title-center {
-    text-align: center;
-    margin-bottom: 12px;
+.event-header {
+    @apply bg-white mb-7 p-5;
 }
 
-.title-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
+.event-title {
+    @apply text-center mb-3 text-[32px] font-bold;
 }
 
-.description {
-    font-size: var(--font-size-medium);
-    white-space: pre-wrap
+.event-info-row {
+    @apply flex justify-between mb-3;
 }
 
-.row {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-    font-size: var(--font-size-medium);
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border)
+.event-info-label {
+    @apply text-2xl font-bold;
 }
 
-.row a {
-    color: var(--link);
-    text-decoration: none;
+.event-button {
+    @apply bg-gray-200 border-2 border-gray-500 py-1 px-3 cursor-pointer hover:bg-gray-300;
 }
 
-.row a:hover {
-    text-decoration: underline;
+.event-tags-container {
+    @apply flex justify-between mb-3;
 }
 
-.title-author {
-    display: flex;
-    gap: 12px;
+.event-tag {
+    @apply bg-blue-200 rounded-xl py-1 px-2.5 mr-1.5 inline-block;
 }
 
-.title-author div:first-child {
-    font-weight: bold;
+.event-section {
+    @apply bg-white mb-7 p-5;
 }
 
-.section.media {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-evenly;
+.event-section-title {
+    @apply text-2xl font-bold;
 }
 
-.media-item {
-    width: 400px;
-    text-align: center;
-    background-color: var(--bg-primary);
-    display: flex;
-    flex-direction: column;
+.event-description {
+    @apply bg-white mb-7 p-5 text-lg whitespace-pre-wrap;
 }
 
-.media-item img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
+.event-list-item {
+    @apply flex justify-between my-2.5 text-lg pb-2.5 border-b border-gray-500;
 }
 
-.media-item iframe {
-    width: 100%;
-    height: 300px;
+.event-link {
+    @apply text-blue-600 no-underline hover:underline;
 }
 
-.caption {
-    margin-top: 8px;
-    padding: 8px;
-    text-align: center;
-    font-size: var(--font-size-small)
+.event-book-info {
+    @apply flex gap-3;
+}
+
+.event-book-title {
+    @apply font-bold;
+}
+
+.event-media-gallery {
+    @apply bg-white mb-7 p-5 flex flex-wrap gap-5 justify-evenly;
+}
+
+.event-media-item {
+    @apply w-96 text-center bg-gray-100 flex flex-col;
+}
+
+.event-media-image {
+    @apply w-full h-72 object-cover;
+}
+
+.event-media-video {
+    @apply w-full h-72;
+}
+
+.event-media-caption {
+    @apply mt-2 p-2 text-center text-sm;
 }

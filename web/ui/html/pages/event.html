@@ -1,0 +1,72 @@
+{{define "main"}}
+<div class="event-container">
+  <div class="event-header">
+    <h1 class="event-title">{{.Title}}</h1>
+    <div class="event-info-row">
+      <h2 class="event-info-label">{{.Country}}</h2>
+      <h2 class="event-info-label">{{.Date}}</h2>
+    </div>
+    <div class="event-tags-container">
+      <div>
+        {{range .Tags}}
+        <span class="event-tag"> {{.}} </span>
+        {{end}}
+      </div>
+    </div>
+  </div>
+
+  <div class="event-description">{{.Description}}</div>
+
+  <div class="event-section">
+    <h2 class="event-section-title">Sources</h2>
+    {{range .Sources}}
+    <div class="event-list-item">
+      <div>{{.Name}}</div>
+      <a class="event-link" href="{{.URL}}" target="_blank">{{.URL}}</a>
+    </div>
+    {{end}}
+  </div>
+
+  <div class="event-section">
+    <h2 class="event-section-title">Books</h2>
+    {{range .Books}}
+    <div class="event-list-item">
+      <div class="event-book-info">
+        <div class="event-book-title">{{.Title}}</div>
+        <div>by {{.Author}}</div>
+      </div>
+      <a class="event-link" href="{{.Link}}" target="_blank">link</a>
+    </div>
+    {{end}}
+  </div>
+
+  <div class="event-media-gallery">
+    {{range .Medias}} {{if eq .Type "photo"}}
+    <div class="event-media-item">
+      <img class="event-media-image" src="{{.URL}}" alt="{{.Caption}}" />
+      {{if .Caption}}
+      <p class="event-media-caption">{{.Caption}}</p>
+      {{end}}
+    </div>
+    {{else if eq .Type "youtube"}}
+    <div class="event-media-item">
+      <iframe
+        class="event-media-video"
+        src="https://www.youtube.com/embed/{{.URL}}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      >
+      </iframe>
+      {{if .Caption}}
+      <p class="event-media-caption">{{.Caption}}</p>
+      {{end}}
+    </div>
+    {{end}} {{end}}
+  </div>
+
+  <button class="event-button" onclick="window.location='/event/edit/{{.ID}}'">
+    Edit Event
+  </button>
+</div>
+{{end}}

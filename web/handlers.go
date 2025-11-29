@@ -14,11 +14,15 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, http.StatusOK, "home.tmpl", events)
+	app.render(w, http.StatusOK, "home.html", events)
+}
+
+func (app *application) books(w http.ResponseWriter, r *http.Request) {
+	app.render(w, http.StatusOK, "books.html", nil)
 }
 
 func (app *application) contribute(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "contribute.tmpl", nil)
+	app.render(w, http.StatusOK, "contribute.html", nil)
 }
 
 func (app *application) eventDisplay(w http.ResponseWriter, r *http.Request) {
@@ -31,11 +35,11 @@ func (app *application) eventDisplay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, http.StatusOK, "event.tmpl", event)
+	app.render(w, http.StatusOK, "event.html", event)
 }
 
 func (app *application) eventEdit(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	fmt.Println(id)
-	app.render(w, http.StatusOK, "event_edit.tmpl", nil)
+	app.render(w, http.StatusOK, "event_edit.html", nil)
 }
