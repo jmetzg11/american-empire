@@ -65,6 +65,79 @@ func (app *application) getMainPage() ([]Event, error) {
 	return events, nil
 }
 
+type BookEvent struct {
+	Id      int
+	Title   string
+	Date    string
+	Country string
+}
+
+type BookMain struct {
+	Title  string
+	Author string
+	Link   string
+	Events []BookEvent
+}
+
+func (app *application) getBooks() ([]BookMain, error) {
+	query := `
+		SELECT
+			b.title,
+			b.author,
+			b.link,
+			COALESCE(json_agg(DISTINCT jsonb_build_object(
+				'id', e.id,
+				'title', e.title,
+				'date', e.date,
+				'country', e.country
+			)) FILTER (WHERE e.id IS NOT NULL), '[]') as events
+		FROM books b
+		LEFT JOIN book_events be ON b.id = be.book_id
+		LEFT JOIN events e ON be.event_id = e.id
+		GROUP BY b.id, b.title, b.author, b.link
+		ORDER BY b.title
+	`
+	rows, err := app.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []BookMain
+	for rows.Next() {
+		var book BookMain
+		var eventsJSON string
+
+		err := rows.Scan(
+			&book.Title,
+			&book.Author,
+			&book.Link,
+			&eventsJSON,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		var events []BookEvent
+		json.Unmarshal([]byte(eventsJSON), &events)
+
+		for i := range events {
+			if events[i].Date != "" {
+				dateTime, err := time.Parse("2006-01-02T15:04:05Z", events[i].Date)
+				if err == nil {
+					events[i].Date = dateTime.Format("2006 Jan 02")
+				}
+			}
+		}
+		book.Events = events
+		books = append(books, book)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
 type Source struct {
 	Name string
 	URL  string

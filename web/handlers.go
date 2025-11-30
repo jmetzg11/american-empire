@@ -18,7 +18,13 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) books(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "books.html", nil)
+	data, err := app.getBooks()
+	if err != nil {
+		log.Printf("Error fetching books: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	app.render(w, http.StatusOK, "books.html", data)
 }
 
 func (app *application) contribute(w http.ResponseWriter, r *http.Request) {

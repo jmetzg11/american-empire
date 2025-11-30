@@ -27,4 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Books expandable rows functionality
+    const bookRows = document.querySelectorAll('.book-row');
+    if (bookRows.length > 0) {
+        bookRows.forEach(row => {
+            row.addEventListener('click', function() {
+                const index = this.getAttribute('data-book-index');
+                const eventsRow = document.getElementById('events-' + index);
+                const toggleIcon = this.querySelector('.toggle-icon');
+
+                if (eventsRow.classList.contains('hidden')) {
+                    eventsRow.classList.remove('hidden');
+                    toggleIcon.textContent = '▼';
+                } else {
+                    eventsRow.classList.add('hidden');
+                    toggleIcon.textContent = '▶';
+                }
+            });
+        });
+    }
 });

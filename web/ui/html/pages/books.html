@@ -1,6 +1,58 @@
 {{define "main"}}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-gray-800 mb-6">Books</h1>
-    <p class="text-gray-600">Books page coming soon...</p>
+<div class="books-container">
+  <div class="books-table-wrapper">
+    <table class="books-table">
+      <thead class="books-table-header">
+        <tr>
+          <th class="books-table-th">Title</th>
+          <th class="books-table-th">Author</th>
+          <th class="books-table-th">Link</th>
+          <th class="books-table-th">Events</th>
+        </tr>
+      </thead>
+      <tbody class="books-table-body">
+        {{range $index, $book := .}}
+        <tr class="book-row" data-book-index="{{$index}}">
+          <td class="book-title-cell">{{$book.Title}}</td>
+          <td class="book-author-cell">{{$book.Author}}</td>
+          <td class="book-cell">
+            <a
+              href="{{$book.Link}}"
+              target="_blank"
+              class="book-link-cell"
+              onclick="event.stopPropagation()"
+              >View</a
+            >
+          </td>
+          <td class="book-events-cell">
+            <span class="toggle-icon">▶</span>
+            <span class="ml-1">{{len $book.Events}} event(s)</span>
+          </td>
+        </tr>
+        <tr class="events-row hidden" id="events-{{$index}}">
+          <td colspan="4" class="events-expanded-row">
+            {{if $book.Events}}
+            <div class="events-content">
+              <h4 class="events-content-title">Related Events:</h4>
+              <ul class="events-list">
+                {{range $book.Events}}
+                <li class="event-list-item">
+                  <a href="/event/{{.Id}}" class="event-list-link"
+                    >{{.Title}}</a
+                  >
+                  <div class="event-list-details">{{.Date}} - {{.Country}}</div>
+                </li>
+                {{end}}
+              </ul>
+            </div>
+            {{else}}
+            <p class="no-events-message">No events associated with this book</p>
+            {{end}}
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </div>
 {{end}}

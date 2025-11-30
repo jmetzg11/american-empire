@@ -92,7 +92,7 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 	buf.WriteTo(w)
 }
 
-var limiter = rate.NewLimiter(2, 5)
+var limiter = rate.NewLimiter(10, 15)
 
 func rateLimit(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
