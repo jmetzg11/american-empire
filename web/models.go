@@ -4,7 +4,13 @@ import (
 	"encoding/json"
 	"os"
 	"time"
+
+	"github.com/lib/pq"
 )
+
+type Filter struct {
+	Tags []string
+}
 
 type Event struct {
 	ID      int
@@ -14,7 +20,12 @@ type Event struct {
 	Tags    []string
 }
 
-func (app *application) getMainPage() ([]Event, error) {
+type MainData struct {
+	Event  []Event
+	Filter Filter
+}
+
+func (app *application) getMainPage(tags []string) (MainData, error) {
 	query := `
 		SELECT
 			e.id,
@@ -26,12 +37,21 @@ func (app *application) getMainPage() ([]Event, error) {
 		LEFT JOIN event_tags et ON e.id = et.event_id
 		LEFT JOIN tags t ON et.tag_id = t.id
 		WHERE e.active IS NOT NULL AND e.flagged = False
+		AND (
+			cardinality($1::text[]) = 0 OR
+			e.id IN (
+				SELECT et2.event_id
+				FROM event_tags et2
+				JOIN tags t2 ON et2.tag_id = t2.id
+				WHERE t2.name = ANY($1)
+			)
+		)
 		GROUP BY e.id, e.title, e.date, e.country
 		ORDER BY e.date DESC
 	`
-	rows, err := app.db.Query(query)
+	rows, err := app.db.Query(query, pq.Array(tags))
 	if err != nil {
-		return nil, err
+		return MainData{}, err
 	}
 	defer rows.Close()
 
@@ -49,7 +69,7 @@ func (app *application) getMainPage() ([]Event, error) {
 			&tagsJSON,
 		)
 		if err != nil {
-			return nil, err
+			return MainData{}, err
 		}
 
 		event.Date = dateTime.Format("2006 Jan 02")
@@ -59,10 +79,42 @@ func (app *application) getMainPage() ([]Event, error) {
 		events = append(events, event)
 	}
 	if err = rows.Err(); err != nil {
+		return MainData{}, err
+	}
+
+	return MainData{
+		Event:  events,
+		Filter: Filter{Tags: tags},
+	}, nil
+}
+
+func (app *application) getSearchParams() ([]string, error) {
+	// will add country later
+	query := `
+		SELECT name
+		FROM tags
+		ORDER BY name
+	`
+	rows, err := app.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tags []string
+	for rows.Next() {
+		var tag string
+		err := rows.Scan(&tag)
+		if err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return events, nil
+	return tags, nil
 }
 
 type BookEvent struct {

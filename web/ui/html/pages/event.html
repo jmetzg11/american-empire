@@ -7,9 +7,11 @@
       <h2 class="event-info-label">{{.Date}}</h2>
     </div>
     <div class="event-tags-container">
-      <div>
+      <div class="flex flex-wrap gap-2">
         {{range .Tags}}
-        <span class="event-tag"> {{.}} </span>
+        <a href="/?tags={{.}}" class="bg-blue-200 rounded-xl py-1 px-2.5 inline-block hover:bg-blue-300 transition-colors">
+          {{.}}
+        </a>
         {{end}}
       </div>
     </div>

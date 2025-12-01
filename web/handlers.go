@@ -1,20 +1,40 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
 
 func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
-	events, err := app.getMainPage()
+	queryParams := r.URL.Query()
+
+	tags := queryParams["tags"]
+	if tags == nil {
+		tags = []string{}
+	}
+
+	data, err := app.getMainPage(tags)
 	if err != nil {
 		log.Printf("Error fetching events: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	app.render(w, http.StatusOK, "home.html", events)
+	app.render(w, http.StatusOK, "home.html", data)
+}
+
+func (app *application) search(w http.ResponseWriter, r *http.Request) {
+	tags, err := app.getSearchParams()
+	if err != nil {
+		log.Printf("Error fetching tags: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tags)
 }
 
 func (app *application) books(w http.ResponseWriter, r *http.Request) {

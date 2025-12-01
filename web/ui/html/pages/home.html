@@ -1,7 +1,7 @@
 {{define "main"}}
 <div class="max-w-6xl mx-auto p-5">
   <div class="w-full flex flex-col gap-4">
-    {{range $index, $_ := .}}
+    {{range $index, $_ := .Event}}
     <div
       class="bg-white border border-gray-500 rounded-lg p-4 cursor-pointer transition-colors hover:bg-gray-200 flex gap-4"
       onclick="window.location='/event/{{.ID}}'"
