@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
-    // Books expandable rows functionality
+    // Books expandable rows functionality (table view)
     const bookRows = document.querySelectorAll('.book-row');
     if (bookRows.length > 0) {
         bookRows.forEach(row => {
@@ -116,6 +116,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     toggleIcon.textContent = '▼';
                 } else {
                     eventsRow.classList.add('hidden');
+                    toggleIcon.textContent = '▶';
+                }
+            });
+        });
+    }
+
+    // Books expandable cards functionality (mobile view)
+    const bookCards = document.querySelectorAll('.book-card');
+    if (bookCards.length > 0) {
+        bookCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const index = this.getAttribute('data-book-index');
+                const eventsCard = document.getElementById('events-card-' + index);
+                const toggleIcon = this.querySelector('.toggle-icon');
+
+                if (eventsCard.classList.contains('hidden')) {
+                    eventsCard.classList.remove('hidden');
+                    toggleIcon.textContent = '▼';
+                } else {
+                    eventsCard.classList.add('hidden');
                     toggleIcon.textContent = '▶';
                 }
             });

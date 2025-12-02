@@ -1,5 +1,6 @@
 {{define "main"}}
 <div class="books-container">
+  <!-- Table view for large screens -->
   <div class="books-table-wrapper">
     <table class="books-table">
       <thead class="books-table-header">
@@ -53,6 +54,50 @@
         {{end}}
       </tbody>
     </table>
+  </div>
+
+  <!-- Card view for medium and smaller screens -->
+  <div class="books-cards-wrapper">
+    {{range $index, $book := .}}
+    <div class="book-card" data-book-index="{{$index}}">
+      <div class="book-card-header">
+        <div class="book-card-title">{{$book.Title}}</div>
+        <div class="book-card-author">{{$book.Author}}</div>
+      </div>
+      <div class="book-card-footer">
+        <a
+          href="{{$book.Link}}"
+          target="_blank"
+          class="book-card-link"
+          onclick="event.stopPropagation()"
+          >View</a
+        >
+        <div class="book-card-events">
+          <span class="toggle-icon">▶</span>
+          <span class="ml-1">{{len $book.Events}} event(s)</span>
+        </div>
+      </div>
+      <div class="events-card-expanded hidden" id="events-card-{{$index}}">
+        {{if $book.Events}}
+        <div class="events-content">
+          <h4 class="events-content-title">Related Events:</h4>
+          <ul class="events-list">
+            {{range $book.Events}}
+            <li class="event-list-item">
+              <a href="/event/{{.Id}}" class="event-list-link"
+                >{{.Title}}</a
+              >
+              <div class="event-list-details">{{.Date}} - {{.Country}}</div>
+            </li>
+            {{end}}
+          </ul>
+        </div>
+        {{else}}
+        <p class="no-events-message">No events associated with this book</p>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
   </div>
 </div>
 {{end}}

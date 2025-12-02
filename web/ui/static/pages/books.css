@@ -8,8 +8,9 @@
     @apply text-4xl font-bold text-gray-800 mb-6;
 }
 
+/* Table view - visible on large screens only */
 .books-table-wrapper {
-    @apply w-full;
+    @apply w-full hidden md:block;
 }
 
 .books-table {
@@ -60,6 +61,44 @@
     @apply bg-gray-50 border border-gray-500;
 }
 
+/* Card view - visible on medium and smaller screens only */
+.books-cards-wrapper {
+    @apply flex flex-col gap-4 md:hidden;
+}
+
+.book-card {
+    @apply bg-white border border-gray-500 rounded-lg cursor-pointer transition-colors hover:bg-gray-50;
+}
+
+.book-card-header {
+    @apply p-4 border-b border-gray-300;
+}
+
+.book-card-title {
+    @apply text-lg font-semibold text-gray-800 mb-2;
+}
+
+.book-card-author {
+    @apply text-base text-gray-700;
+}
+
+.book-card-footer {
+    @apply p-4 flex justify-between items-center;
+}
+
+.book-card-link {
+    @apply text-blue-600 hover:underline font-medium;
+}
+
+.book-card-events {
+    @apply text-base text-gray-700;
+}
+
+.events-card-expanded {
+    @apply bg-gray-50 border-t border-gray-300;
+}
+
+/* Shared styles */
 .events-content {
     @apply px-8 py-6;
 }
