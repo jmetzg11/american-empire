@@ -147,7 +147,7 @@ func (app *application) getBooks() ([]BookMain, error) {
 		LEFT JOIN book_events be ON b.id = be.book_id
 		LEFT JOIN events e ON be.event_id = e.id
 		GROUP BY b.id, b.title, b.author, b.link
-		ORDER BY b.title
+		ORDER BY COUNT(e.id) DESC, b.title
 	`
 	rows, err := app.db.Query(query)
 	if err != nil {

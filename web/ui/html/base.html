@@ -36,27 +36,27 @@
       id="searchModal"
       class="hidden fixed inset-0 bg-gray-500 bg-opacity-80 backdrop-blur-md z-50"
     >
-      <div class="flex items-center justify-center min-h-screen">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl mx-4">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-bold text-gray-800">Search by Tags</h2>
+      <div class="flex items-center justify-center min-h-screen p-2 sm:p-4">
+        <div class="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+          <h2 class="text-lg sm:text-2xl font-bold text-gray-800">Search by Tags</h2>
           <button
             id="closeModal"
-            class="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+            class="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl font-bold ml-2 shrink-0"
           >
             &times;
           </button>
         </div>
-        <div class="mb-4">
+        <div class="mb-3 sm:mb-4">
           <input
             type="text"
             id="tagSearchInput"
             placeholder="Type to search tags..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div id="tagResults" class="max-h-96 overflow-y-auto">
-          <div class="text-gray-500 text-center py-4">Loading tags...</div>
+        <div id="tagResults" class="max-h-60 sm:max-h-96 overflow-y-auto">
+          <div class="text-gray-500 text-center py-4 text-sm sm:text-base">Loading tags...</div>
         </div>
         </div>
       </div>
