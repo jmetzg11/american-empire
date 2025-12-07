@@ -9,15 +9,15 @@ class SourceInline(admin.TabularInline):
 
 class MediaAdminForm(forms.ModelForm):
     upload_file = forms.FileField(required=False, help_text="Upload a photo file")
-    
+
     class Meta:
         model = Media
         fields = '__all__'
-    
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         uploaded_file = self.cleaned_data.get('upload_file')
-        
+
         if uploaded_file and instance.event_id:
             # Save the uploaded file and set the path
             try:
@@ -26,7 +26,7 @@ class MediaAdminForm(forms.ModelForm):
                 instance.type = 'photo'
             except Exception as e:
                 raise forms.ValidationError(f"Failed to upload file: {str(e)}")
-        
+
         if commit:
             instance.save()
         return instance
@@ -40,17 +40,18 @@ class MediaInline(admin.TabularInline):
     show_change_link = True
     fields = ['type', 'url', 'path', 'caption', 'upload_file', 'image_preview']
 
+class TagInline(admin.TabularInline):
+    model = Tag.events.through
+    extra = 1
+    verbose_name = "Tag"
+    verbose_name_plural = "Tags"
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['title', 'date', 'country', 'active', 'flagged', 'created_at']
     list_filter = ['country', 'flagged', 'date', 'active']
     search_fields = ['title', 'description', 'country']
-    inlines = [SourceInline, MediaInline]
-    readonly_fields = ['get_tags']
-    
-    def get_tags(self, obj):
-        return ', '.join([tag.name for tag in obj.tags.all()])
-    get_tags.short_description = 'Tags'
+    inlines = [SourceInline, MediaInline, TagInline]
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
